@@ -2,14 +2,14 @@ import { FileUpload } from "@/components/FileUpload";
 import { Flashcard } from "@/components/Flashcard";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Heart, Stethoscope, Hospital } from "lucide-react";
+import { Heart, Stethoscope, Hospital, Brain, Book, Clock, Plus } from "lucide-react";
 
 const Index = () => {
   const [showFlashcards, setShowFlashcards] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#121212] text-white">
-      {/* Spotify-style header */}
+      {/* Spotify-style header with medical theme */}
       <header className="bg-gradient-to-b from-medical-primary/20 to-[#121212] p-8">
         <div className="flex items-center gap-4">
           <div className="p-4 bg-medical-primary rounded-lg">
@@ -23,13 +23,30 @@ const Index = () => {
       </header>
 
       <main className="max-w-5xl mx-auto px-8 py-6">
+        {/* Spotify-style navigation pills */}
+        <nav className="flex gap-4 mb-8">
+          <Button variant="ghost" className="rounded-full hover:bg-white/10 gap-2">
+            <Brain className="w-4 h-4" />
+            Study
+          </Button>
+          <Button variant="ghost" className="rounded-full hover:bg-white/10 gap-2">
+            <Book className="w-4 h-4" />
+            Library
+          </Button>
+          <Button variant="ghost" className="rounded-full hover:bg-white/10 gap-2">
+            <Clock className="w-4 h-4" />
+            Recent
+          </Button>
+        </nav>
+
         {/* Action buttons row */}
         <div className="flex items-center gap-4 mb-8">
           {!showFlashcards && (
             <Button 
               onClick={() => setShowFlashcards(true)}
-              className="bg-medical-secondary hover:bg-medical-secondary/90 text-white rounded-full px-8 py-6"
+              className="bg-medical-secondary hover:bg-medical-secondary/90 text-white rounded-full px-8 py-6 gap-2"
             >
+              <Plus className="w-5 h-5" />
               Generate Flashcards
             </Button>
           )}
