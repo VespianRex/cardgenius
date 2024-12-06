@@ -2,17 +2,48 @@ import { FileUpload } from "@/components/FileUpload";
 import { Flashcard } from "@/components/Flashcard";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Heart, Stethoscope, Hospital, Brain, Book, Clock, Plus } from "lucide-react";
+import { Heart, Stethoscope, Hospital, Brain, Book, Clock, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
 
 const Index = () => {
   const [showFlashcards, setShowFlashcards] = useState(false);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+
+  const demoFlashcards = [
+    {
+      front: "What is the primary function of hemoglobin?",
+      back: "To transport oxygen throughout the body by binding to oxygen molecules in the lungs and releasing them in tissues."
+    },
+    {
+      front: "Name the four chambers of the heart",
+      back: "Right atrium, left atrium, right ventricle, and left ventricle"
+    },
+    {
+      front: "What is the function of the hypothalamus?",
+      back: "The hypothalamus controls body temperature, hunger, thirst, sleep, and emotional behavior"
+    }
+  ];
+
+  const handleNextCard = () => {
+    if (currentCardIndex < demoFlashcards.length - 1) {
+      setCurrentCardIndex(prev => prev + 1);
+      toast.info(`Card ${currentCardIndex + 2} of ${demoFlashcards.length}`);
+    }
+  };
+
+  const handlePrevCard = () => {
+    if (currentCardIndex > 0) {
+      setCurrentCardIndex(prev => prev - 1);
+      toast.info(`Card ${currentCardIndex} of ${demoFlashcards.length}`);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#121212] text-white">
       {/* Spotify-style header with medical theme */}
       <header className="bg-gradient-to-b from-medical-primary/20 to-[#121212] p-8">
         <div className="flex items-center gap-4">
-          <div className="p-4 bg-medical-primary rounded-lg">
+          <div className="p-4 bg-medical-primary rounded-lg shadow-lg">
             <Stethoscope className="w-8 h-8 text-white" />
           </div>
           <div>
@@ -24,16 +55,16 @@ const Index = () => {
 
       <main className="max-w-5xl mx-auto px-8 py-6">
         {/* Spotify-style navigation pills */}
-        <nav className="flex gap-4 mb-8">
-          <Button variant="ghost" className="rounded-full hover:bg-white/10 gap-2">
+        <nav className="flex gap-4 mb-8 overflow-x-auto pb-2">
+          <Button variant="ghost" className="rounded-full hover:bg-white/10 gap-2 min-w-fit">
             <Brain className="w-4 h-4" />
             Study
           </Button>
-          <Button variant="ghost" className="rounded-full hover:bg-white/10 gap-2">
+          <Button variant="ghost" className="rounded-full hover:bg-white/10 gap-2 min-w-fit">
             <Book className="w-4 h-4" />
             Library
           </Button>
-          <Button variant="ghost" className="rounded-full hover:bg-white/10 gap-2">
+          <Button variant="ghost" className="rounded-full hover:bg-white/10 gap-2 min-w-fit">
             <Clock className="w-4 h-4" />
             Recent
           </Button>
@@ -44,7 +75,7 @@ const Index = () => {
           {!showFlashcards && (
             <Button 
               onClick={() => setShowFlashcards(true)}
-              className="bg-medical-secondary hover:bg-medical-secondary/90 text-white rounded-full px-8 py-6 gap-2"
+              className="bg-medical-secondary hover:bg-medical-secondary/90 text-white rounded-full px-8 py-6 gap-2 shadow-lg transition-transform hover:scale-105"
             >
               <Plus className="w-5 h-5" />
               Generate Flashcards
@@ -53,7 +84,7 @@ const Index = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full hover:bg-white/10"
+            className="rounded-full hover:bg-white/10 transition-colors"
           >
             <Heart className="w-6 h-6" />
           </Button>
@@ -75,23 +106,32 @@ const Index = () => {
             <div className="animate-fade-in space-y-6">
               <div className="bg-white/5 rounded-xl p-6">
                 <Flashcard
-                  front="What is the primary function of hemoglobin?"
-                  back="To transport oxygen throughout the body by binding to oxygen molecules in the lungs and releasing them in tissues."
+                  front={demoFlashcards[currentCardIndex].front}
+                  back={demoFlashcards[currentCardIndex].back}
                 />
               </div>
               
               <div className="flex justify-center gap-4">
                 <Button 
                   variant="outline"
-                  className="rounded-full border-white/10 hover:bg-white/10 hover:border-white/20"
+                  onClick={handlePrevCard}
+                  disabled={currentCardIndex === 0}
+                  className="rounded-full border-white/10 hover:bg-white/10 hover:border-white/20 gap-2"
                 >
+                  <ChevronLeft className="w-4 h-4" />
                   Previous
                 </Button>
                 <Button 
-                  className="rounded-full bg-medical-secondary hover:bg-medical-secondary/90"
+                  onClick={handleNextCard}
+                  disabled={currentCardIndex === demoFlashcards.length - 1}
+                  className="rounded-full bg-medical-secondary hover:bg-medical-secondary/90 gap-2"
                 >
                   Next
+                  <ChevronRight className="w-4 h-4" />
                 </Button>
+              </div>
+              <div className="text-center text-sm text-gray-400">
+                Card {currentCardIndex + 1} of {demoFlashcards.length}
               </div>
             </div>
           )}
