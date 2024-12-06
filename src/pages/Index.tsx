@@ -2,46 +2,84 @@ import { FileUpload } from "@/components/FileUpload";
 import { Flashcard } from "@/components/Flashcard";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Heart, Stethoscope, Hospital } from "lucide-react";
 
 const Index = () => {
   const [showFlashcards, setShowFlashcards] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-      <div className="container py-8">
-        <h1 className="text-4xl font-bold text-center text-medical-primary mb-2">
-          Medical Study Assistant
-        </h1>
-        <p className="text-center text-gray-600 mb-8">
-          Upload your medical documents and let AI help you study
-        </p>
+    <div className="min-h-screen bg-[#121212] text-white">
+      {/* Spotify-style header */}
+      <header className="bg-gradient-to-b from-medical-primary/20 to-[#121212] p-8">
+        <div className="flex items-center gap-4">
+          <div className="p-4 bg-medical-primary rounded-lg">
+            <Stethoscope className="w-8 h-8 text-white" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold uppercase text-gray-400">Study Assistant</h2>
+            <h1 className="text-4xl font-bold mt-1">Medical Flashcards</h1>
+          </div>
+        </div>
+      </header>
 
-        <div className="max-w-2xl mx-auto space-y-8">
-          <FileUpload />
-
-          {showFlashcards && (
-            <div className="animate-fade-in space-y-4">
-              <Flashcard
-                front="What is the primary function of hemoglobin?"
-                back="To transport oxygen throughout the body by binding to oxygen molecules in the lungs and releasing them in tissues."
-              />
-              <div className="flex justify-center gap-4">
-                <Button variant="outline">Previous</Button>
-                <Button>Next</Button>
-              </div>
-            </div>
-          )}
-
+      <main className="max-w-5xl mx-auto px-8 py-6">
+        {/* Action buttons row */}
+        <div className="flex items-center gap-4 mb-8">
           {!showFlashcards && (
-            <Button
-              className="w-full"
+            <Button 
               onClick={() => setShowFlashcards(true)}
+              className="bg-medical-secondary hover:bg-medical-secondary/90 text-white rounded-full px-8 py-6"
             >
               Generate Flashcards
             </Button>
           )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full hover:bg-white/10"
+          >
+            <Heart className="w-6 h-6" />
+          </Button>
         </div>
-      </div>
+
+        {/* Main content */}
+        <div className="space-y-8">
+          {/* Upload section */}
+          <div className="bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-colors">
+            <div className="flex items-center gap-4 mb-4">
+              <Hospital className="w-6 h-6 text-medical-accent" />
+              <h2 className="text-xl font-bold">Upload Medical Documents</h2>
+            </div>
+            <FileUpload />
+          </div>
+
+          {/* Flashcards section */}
+          {showFlashcards && (
+            <div className="animate-fade-in space-y-6">
+              <div className="bg-white/5 rounded-xl p-6">
+                <Flashcard
+                  front="What is the primary function of hemoglobin?"
+                  back="To transport oxygen throughout the body by binding to oxygen molecules in the lungs and releasing them in tissues."
+                />
+              </div>
+              
+              <div className="flex justify-center gap-4">
+                <Button 
+                  variant="outline"
+                  className="rounded-full border-white/10 hover:bg-white/10 hover:border-white/20"
+                >
+                  Previous
+                </Button>
+                <Button 
+                  className="rounded-full bg-medical-secondary hover:bg-medical-secondary/90"
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 };
