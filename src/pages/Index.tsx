@@ -1,14 +1,11 @@
-import { FileUpload } from "@/components/FileUpload";
-import { Flashcard } from "@/components/Flashcard";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Heart, Stethoscope, Hospital, Brain, Book, Clock, Plus, ChevronLeft, ChevronRight } from "lucide-react";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { FileUpload } from "@/components/FileUpload";
+import { FlashcardSection } from "@/components/FlashcardSection";
+import { Brain, Book, Clock, Plus, Heart, Stethoscope, Hospital } from "lucide-react";
 
 const Index = () => {
   const [showFlashcards, setShowFlashcards] = useState(false);
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [showRating, setShowRating] = useState(false);
 
   const demoFlashcards = [
     {
@@ -45,35 +42,6 @@ const Index = () => {
     }
   ];
 
-  const handleNextCard = () => {
-    if (currentCardIndex < demoFlashcards.length - 1) {
-      setCurrentCardIndex(prev => prev + 1);
-      setShowRating(false);
-      toast.info(`Card ${currentCardIndex + 2} of ${demoFlashcards.length}`);
-    }
-  };
-
-  const handlePrevCard = () => {
-    if (currentCardIndex > 0) {
-      setCurrentCardIndex(prev => prev - 1);
-      setShowRating(false);
-      toast.info(`Card ${currentCardIndex} of ${demoFlashcards.length}`);
-    }
-  };
-
-  const handleCardFlip = (isFlipped: boolean) => {
-    if (isFlipped) {
-      setShowRating(true);
-    }
-  };
-
-  const handleDifficultyRating = (difficulty: 'easy' | 'medium' | 'hard') => {
-    toast.success(`Rated as ${difficulty}`);
-    console.log(`Card ${currentCardIndex + 1} rated as ${difficulty}`);
-    // Here we would typically update the SRS algorithm with the difficulty rating
-    handleNextCard();
-  };
-
   return (
     <div className="min-h-screen bg-[#121212] text-white">
       {/* Header section */}
@@ -106,7 +74,7 @@ const Index = () => {
           </Button>
         </nav>
 
-        {/* Action buttons row */}
+        {/* Action buttons */}
         <div className="flex items-center gap-4 mb-8">
           {!showFlashcards && (
             <Button 
@@ -126,7 +94,6 @@ const Index = () => {
           </Button>
         </div>
 
-        {/* Main content */}
         <div className="space-y-8">
           {/* Upload section */}
           <div className="bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-colors">
@@ -138,64 +105,7 @@ const Index = () => {
           </div>
 
           {/* Flashcards section */}
-          {showFlashcards && (
-            <div className="animate-fade-in space-y-6">
-              <div className="bg-white/5 rounded-xl p-6">
-                <Flashcard
-                  front={demoFlashcards[currentCardIndex].front}
-                  back={demoFlashcards[currentCardIndex].back}
-                  onFlip={handleCardFlip}
-                />
-              </div>
-              
-              {/* Difficulty rating buttons */}
-              {showRating && (
-                <div className="flex justify-center gap-4 animate-fade-in">
-                  <Button
-                    onClick={() => handleDifficultyRating('easy')}
-                    className="bg-green-600 hover:bg-green-700 text-white px-6"
-                  >
-                    Easy
-                  </Button>
-                  <Button
-                    onClick={() => handleDifficultyRating('medium')}
-                    className="bg-yellow-600 hover:bg-yellow-700 text-white px-6"
-                  >
-                    Medium
-                  </Button>
-                  <Button
-                    onClick={() => handleDifficultyRating('hard')}
-                    className="bg-red-600 hover:bg-red-700 text-white px-6"
-                  >
-                    Hard
-                  </Button>
-                </div>
-              )}
-
-              <div className="flex justify-center gap-4">
-                <Button 
-                  variant="outline"
-                  onClick={handlePrevCard}
-                  disabled={currentCardIndex === 0}
-                  className="rounded-full border-white/10 hover:bg-white/10 hover:border-white/20 gap-2"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  Previous
-                </Button>
-                <Button 
-                  onClick={handleNextCard}
-                  disabled={currentCardIndex === demoFlashcards.length - 1}
-                  className="rounded-full bg-medical-secondary hover:bg-medical-secondary/90 gap-2"
-                >
-                  Next
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </div>
-              <div className="text-center text-sm text-gray-400">
-                Card {currentCardIndex + 1} of {demoFlashcards.length}
-              </div>
-            </div>
-          )}
+          {showFlashcards && <FlashcardSection flashcards={demoFlashcards} />}
         </div>
       </main>
     </div>
