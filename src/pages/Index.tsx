@@ -8,6 +8,7 @@ import { toast } from "sonner";
 const Index = () => {
   const [showFlashcards, setShowFlashcards] = useState(false);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [showRating, setShowRating] = useState(false);
 
   const demoFlashcards = [
     {
@@ -47,6 +48,7 @@ const Index = () => {
   const handleNextCard = () => {
     if (currentCardIndex < demoFlashcards.length - 1) {
       setCurrentCardIndex(prev => prev + 1);
+      setShowRating(false);
       toast.info(`Card ${currentCardIndex + 2} of ${demoFlashcards.length}`);
     }
   };
@@ -54,13 +56,27 @@ const Index = () => {
   const handlePrevCard = () => {
     if (currentCardIndex > 0) {
       setCurrentCardIndex(prev => prev - 1);
+      setShowRating(false);
       toast.info(`Card ${currentCardIndex} of ${demoFlashcards.length}`);
     }
   };
 
+  const handleCardFlip = (isFlipped: boolean) => {
+    if (isFlipped) {
+      setShowRating(true);
+    }
+  };
+
+  const handleDifficultyRating = (difficulty: 'easy' | 'medium' | 'hard') => {
+    toast.success(`Rated as ${difficulty}`);
+    console.log(`Card ${currentCardIndex + 1} rated as ${difficulty}`);
+    // Here we would typically update the SRS algorithm with the difficulty rating
+    handleNextCard();
+  };
+
   return (
     <div className="min-h-screen bg-[#121212] text-white">
-      {/* Spotify-style header with medical theme */}
+      {/* Header section */}
       <header className="bg-gradient-to-b from-medical-primary/20 to-[#121212] p-8">
         <div className="flex items-center gap-4">
           <div className="p-4 bg-medical-primary rounded-lg shadow-lg">
@@ -74,7 +90,7 @@ const Index = () => {
       </header>
 
       <main className="max-w-5xl mx-auto px-8 py-6">
-        {/* Spotify-style navigation pills */}
+        {/* Navigation pills */}
         <nav className="flex gap-4 mb-8 overflow-x-auto pb-2">
           <Button variant="ghost" className="rounded-full hover:bg-white/10 gap-2 min-w-fit">
             <Brain className="w-4 h-4" />
@@ -128,9 +144,34 @@ const Index = () => {
                 <Flashcard
                   front={demoFlashcards[currentCardIndex].front}
                   back={demoFlashcards[currentCardIndex].back}
+                  onFlip={handleCardFlip}
                 />
               </div>
               
+              {/* Difficulty rating buttons */}
+              {showRating && (
+                <div className="flex justify-center gap-4 animate-fade-in">
+                  <Button
+                    onClick={() => handleDifficultyRating('easy')}
+                    className="bg-green-600 hover:bg-green-700 text-white px-6"
+                  >
+                    Easy
+                  </Button>
+                  <Button
+                    onClick={() => handleDifficultyRating('medium')}
+                    className="bg-yellow-600 hover:bg-yellow-700 text-white px-6"
+                  >
+                    Medium
+                  </Button>
+                  <Button
+                    onClick={() => handleDifficultyRating('hard')}
+                    className="bg-red-600 hover:bg-red-700 text-white px-6"
+                  >
+                    Hard
+                  </Button>
+                </div>
+              )}
+
               <div className="flex justify-center gap-4">
                 <Button 
                   variant="outline"

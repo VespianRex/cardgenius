@@ -4,17 +4,24 @@ import { Card } from '@/components/ui/card';
 interface FlashcardProps {
   front: string;
   back: string;
+  onFlip?: (isFlipped: boolean) => void;
 }
 
-export const Flashcard = ({ front, back }: FlashcardProps) => {
+export const Flashcard = ({ front, back, onFlip }: FlashcardProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
+
+  const handleFlip = () => {
+    const newFlipped = !isFlipped;
+    setIsFlipped(newFlipped);
+    onFlip?.(newFlipped);
+  };
 
   return (
     <div className="perspective-1000 w-full max-w-2xl mx-auto">
       <Card
         className={`p-8 cursor-pointer transition-all duration-500 transform bg-white/5 border-white/10 hover:bg-white/10
           ${isFlipped ? 'rotate-y-180' : ''} min-h-[200px] flex items-center justify-center relative group`}
-        onClick={() => setIsFlipped(!isFlipped)}
+        onClick={handleFlip}
       >
         <div 
           className={`text-xl text-center text-white absolute inset-0 flex items-center justify-center p-6 backface-hidden transition-opacity duration-500
