@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/FileUpload";
 import { FlashcardSection } from "@/components/FlashcardSection";
 import { Brain, Book, Clock, Plus, Heart, Stethoscope, Hospital } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Index = () => {
   const [showFlashcards, setShowFlashcards] = useState(false);
@@ -43,15 +44,17 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+      <ThemeToggle />
+      
       {/* Header section */}
-      <header className="bg-gradient-to-b from-medical-primary/20 to-[#121212] p-8">
+      <header className="bg-gradient-to-b from-primary/20 to-background p-8">
         <div className="flex items-center gap-4">
-          <div className="p-4 bg-medical-primary rounded-lg shadow-lg">
-            <Stethoscope className="w-8 h-8 text-white" />
+          <div className="p-4 bg-primary rounded-lg shadow-lg">
+            <Stethoscope className="w-8 h-8 text-primary-foreground" />
           </div>
           <div>
-            <h2 className="text-sm font-bold uppercase text-gray-400">Study Assistant</h2>
+            <h2 className="text-sm font-bold uppercase text-muted-foreground">Study Assistant</h2>
             <h1 className="text-4xl font-bold mt-1">Medical Flashcards</h1>
           </div>
         </div>
@@ -60,15 +63,15 @@ const Index = () => {
       <main className="max-w-5xl mx-auto px-8 py-6">
         {/* Navigation pills */}
         <nav className="flex gap-4 mb-8 overflow-x-auto pb-2">
-          <Button variant="ghost" className="rounded-full hover:bg-white/10 gap-2 min-w-fit">
+          <Button variant="ghost" className="rounded-full hover:bg-accent gap-2 min-w-fit">
             <Brain className="w-4 h-4" />
             Study
           </Button>
-          <Button variant="ghost" className="rounded-full hover:bg-white/10 gap-2 min-w-fit">
+          <Button variant="ghost" className="rounded-full hover:bg-accent gap-2 min-w-fit">
             <Book className="w-4 h-4" />
             Library
           </Button>
-          <Button variant="ghost" className="rounded-full hover:bg-white/10 gap-2 min-w-fit">
+          <Button variant="ghost" className="rounded-full hover:bg-accent gap-2 min-w-fit">
             <Clock className="w-4 h-4" />
             Recent
           </Button>
@@ -79,7 +82,7 @@ const Index = () => {
           {!showFlashcards && (
             <Button 
               onClick={() => setShowFlashcards(true)}
-              className="bg-medical-secondary hover:bg-medical-secondary/90 text-white rounded-full px-8 py-6 gap-2 shadow-lg transition-transform hover:scale-105"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-8 py-6 gap-2 shadow-lg transition-transform hover:scale-105"
             >
               <Plus className="w-5 h-5" />
               Generate Flashcards
@@ -88,7 +91,7 @@ const Index = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full hover:bg-white/10 transition-colors"
+            className="rounded-full hover:bg-accent transition-colors"
           >
             <Heart className="w-6 h-6" />
           </Button>
@@ -96,9 +99,9 @@ const Index = () => {
 
         <div className="space-y-8">
           {/* Upload section */}
-          <div className="bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-colors">
+          <div className="bg-card rounded-xl p-6 hover:bg-accent/50 transition-colors border">
             <div className="flex items-center gap-4 mb-4">
-              <Hospital className="w-6 h-6 text-medical-accent" />
+              <Hospital className="w-6 h-6 text-primary" />
               <h2 className="text-xl font-bold">Upload Medical Documents</h2>
             </div>
             <FileUpload />
