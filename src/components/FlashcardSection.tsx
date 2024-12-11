@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Flashcard } from "./Flashcard";
 import { Button } from "./ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Keyboard } from "lucide-react";
 import { toast } from "sonner";
 import { StudyStats } from "./StudyStats";
 import { Progress } from "./ui/progress";
@@ -16,8 +16,46 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
   const [startTime] = useState(new Date());
   const [ratings, setRatings] = useState({ easy: 0, medium: 0, hard: 0 });
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
 
   const progress = ((currentCardIndex + 1) / flashcards.length) * 100;
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      switch (event.key.toLowerCase()) {
+        case 'arrowleft':
+          if (currentCardIndex > 0) handlePrevCard();
+          break;
+        case 'arrowright':
+          if (currentCardIndex < flashcards.length - 1) handleNextCard();
+          break;
+        case ' ':
+          event.preventDefault();
+          const cardElement = document.querySelector('.flashcard') as HTMLElement;
+          if (cardElement) cardElement.click();
+          break;
+        case 'e':
+          if (showRating) handleDifficultyRating('easy');
+          break;
+        case 'm':
+          if (showRating) handleDifficultyRating('medium');
+          break;
+        case 'h':
+          if (showRating) handleDifficultyRating('hard');
+          break;
+        case 'k':
+          setShowKeyboardShortcuts(prev => !prev);
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [currentCardIndex, flashcards.length, showRating]);
 
   const handleNextCard = () => {
     if (currentCardIndex < flashcards.length - 1) {
@@ -76,6 +114,30 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
         <Progress value={progress} className="h-2" />
       </div>
 
+      {showKeyboardShortcuts && (
+        <div className="bg-white/5 rounded-xl p-4 text-sm text-gray-300 animate-fade-in">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-semibold">Keyboard Shortcuts</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-400 hover:text-white"
+              onClick={() => setShowKeyboardShortcuts(false)}
+            >
+              <Keyboard className="w-4 h-4" />
+            </Button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div>← / →: Navigate cards</div>
+            <div>Space: Flip card</div>
+            <div>E: Rate Easy</div>
+            <div>M: Rate Medium</div>
+            <div>H: Rate Hard</div>
+            <div>K: Toggle shortcuts</div>
+          </div>
+        </div>
+      )}
+
       <div className={`bg-white/5 rounded-xl p-6 transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
         <Flashcard
           front={flashcards[currentCardIndex].front}
@@ -88,21 +150,30 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
         <div className="flex justify-center gap-4 animate-fade-in">
           <Button
             onClick={() => handleDifficultyRating('easy')}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 transition-transform hover:scale-105"
+            className="bg-green-600 hover:bg-green-700 text-white px-6 transition-transform hover:scale-105 relative group"
           >
             Easy
+            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+              Press 'E'
+            </span>
           </Button>
           <Button
             onClick={() => handleDifficultyRating('medium')}
-            className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 transition-transform hover:scale-105"
+            className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 transition-transform hover:scale-105 relative group"
           >
             Medium
+            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+              Press 'M'
+            </span>
           </Button>
           <Button
             onClick={() => handleDifficultyRating('hard')}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 transition-transform hover:scale-105"
+            className="bg-red-600 hover:bg-red-700 text-white px-6 transition-transform hover:scale-105 relative group"
           >
             Hard
+            <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+              Press 'H'
+            </span>
           </Button>
         </div>
       )}
@@ -112,22 +183,36 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
           variant="outline"
           onClick={handlePrevCard}
           disabled={currentCardIndex === 0}
-          className="rounded-full border-white/10 hover:bg-white/10 hover:border-white/20 gap-2 transition-transform hover:scale-105"
+          className="rounded-full border-white/10 hover:bg-white/10 hover:border-white/20 gap-2 transition-transform hover:scale-105 relative group"
         >
           <ChevronLeft className="w-4 h-4" />
           Previous
+          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+            ←
+          </span>
         </Button>
         <Button 
           onClick={handleNextCard}
           disabled={currentCardIndex === flashcards.length - 1}
-          className="rounded-full bg-medical-secondary hover:bg-medical-secondary/90 gap-2 transition-transform hover:scale-105"
+          className="rounded-full bg-medical-secondary hover:bg-medical-secondary/90 gap-2 transition-transform hover:scale-105 relative group"
         >
           Next
           <ChevronRight className="w-4 h-4" />
+          <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+            →
+          </span>
         </Button>
       </div>
       <div className="text-center text-sm text-gray-400">
         Card {currentCardIndex + 1} of {flashcards.length}
+        <Button
+          variant="ghost"
+          size="sm"
+          className="ml-2 text-gray-400 hover:text-white"
+          onClick={() => setShowKeyboardShortcuts(prev => !prev)}
+        >
+          <Keyboard className="w-4 h-4" />
+        </Button>
       </div>
     </div>
   );
