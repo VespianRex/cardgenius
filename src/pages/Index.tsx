@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/FileUpload";
 import { FlashcardSection } from "@/components/FlashcardSection";
-import { Brain, Book, Clock, Plus, Heart, Stethoscope, Hospital, Settings, Graduation, History } from "lucide-react";
+import { Brain, Book, Clock, Plus, Heart, Stethoscope, Hospital, Settings, GraduationCap, History } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   Menubar,
