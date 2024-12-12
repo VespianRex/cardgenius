@@ -2,8 +2,17 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/FileUpload";
 import { FlashcardSection } from "@/components/FlashcardSection";
-import { Brain, Book, Clock, Plus, Heart, Stethoscope, Hospital } from "lucide-react";
+import { Brain, Book, Clock, Plus, Heart, Stethoscope, Hospital, Settings, Graduation, History } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
 
 const Index = () => {
   const [showFlashcards, setShowFlashcards] = useState(false);
@@ -46,7 +55,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
-      <ThemeToggle />
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       
       {/* Header section */}
       <header className="bg-gradient-to-b from-medical-primary/20 to-background p-8">
@@ -62,39 +73,54 @@ const Index = () => {
       </header>
 
       <main className="max-w-5xl mx-auto px-8 py-6">
-        {/* Navigation pills */}
-        <nav className="flex gap-4 mb-8 overflow-x-auto pb-2">
-          <Button 
-            variant="ghost" 
-            className={`rounded-full hover:bg-medical-accent/20 gap-2 min-w-fit transition-all duration-300 ${
-              activeTab === 'study' ? 'bg-medical-accent/30 text-medical-primary font-medium shadow-sm' : ''
-            }`}
-            onClick={() => setActiveTab('study')}
-          >
-            <Brain className="w-4 h-4" />
-            Study
-          </Button>
-          <Button 
-            variant="ghost" 
-            className={`rounded-full hover:bg-medical-accent/20 gap-2 min-w-fit transition-all duration-300 ${
-              activeTab === 'library' ? 'bg-medical-accent/30 text-medical-primary font-medium shadow-sm' : ''
-            }`}
-            onClick={() => setActiveTab('library')}
-          >
-            <Book className="w-4 h-4" />
-            Library
-          </Button>
-          <Button 
-            variant="ghost" 
-            className={`rounded-full hover:bg-medical-accent/20 gap-2 min-w-fit transition-all duration-300 ${
-              activeTab === 'recent' ? 'bg-medical-accent/30 text-medical-primary font-medium shadow-sm' : ''
-            }`}
-            onClick={() => setActiveTab('recent')}
-          >
-            <Clock className="w-4 h-4" />
-            Recent
-          </Button>
-        </nav>
+        {/* Enhanced Navigation Menu */}
+        <Menubar className="mb-8 bg-card border-medical-accent/20">
+          <MenubarMenu>
+            <MenubarTrigger className={`gap-2 ${activeTab === 'study' ? 'text-medical-primary' : ''}`} onClick={() => setActiveTab('study')}>
+              <Brain className="w-4 h-4" />
+              Study
+            </MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem>
+                New Session
+                <MenubarShortcut>⌘N</MenubarShortcut>
+              </MenubarItem>
+              <MenubarItem>Review Due Cards</MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem>
+                Statistics
+                <MenubarShortcut>⌘S</MenubarShortcut>
+              </MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+
+          <MenubarMenu>
+            <MenubarTrigger className={`gap-2 ${activeTab === 'library' ? 'text-medical-primary' : ''}`} onClick={() => setActiveTab('library')}>
+              <Book className="w-4 h-4" />
+              Library
+            </MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem>All Decks</MenubarItem>
+              <MenubarItem>Categories</MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem>Import Deck</MenubarItem>
+              <MenubarItem>Export Deck</MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+
+          <MenubarMenu>
+            <MenubarTrigger className={`gap-2 ${activeTab === 'recent' ? 'text-medical-primary' : ''}`} onClick={() => setActiveTab('recent')}>
+              <Clock className="w-4 h-4" />
+              Recent
+            </MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem>Last Session</MenubarItem>
+              <MenubarItem>Study History</MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem>Progress Report</MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+        </Menubar>
 
         {/* Action buttons */}
         <div className="flex items-center gap-4 mb-8">
