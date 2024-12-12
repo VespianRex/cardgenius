@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Index = () => {
   const [showFlashcards, setShowFlashcards] = useState(false);
+  const [activeTab, setActiveTab] = useState('study');
 
   const demoFlashcards = [
     {
@@ -48,10 +49,10 @@ const Index = () => {
       <ThemeToggle />
       
       {/* Header section */}
-      <header className="bg-gradient-to-b from-primary/20 to-background p-8">
+      <header className="bg-gradient-to-b from-medical-primary/20 to-background p-8">
         <div className="flex items-center gap-4">
-          <div className="p-4 bg-primary rounded-lg shadow-lg">
-            <Stethoscope className="w-8 h-8 text-primary-foreground" />
+          <div className="p-4 bg-medical-primary rounded-lg shadow-lg">
+            <Stethoscope className="w-8 h-8 text-white" />
           </div>
           <div>
             <h2 className="text-sm font-bold uppercase text-muted-foreground">Study Assistant</h2>
@@ -63,15 +64,33 @@ const Index = () => {
       <main className="max-w-5xl mx-auto px-8 py-6">
         {/* Navigation pills */}
         <nav className="flex gap-4 mb-8 overflow-x-auto pb-2">
-          <Button variant="ghost" className="rounded-full hover:bg-accent gap-2 min-w-fit">
+          <Button 
+            variant="ghost" 
+            className={`rounded-full hover:bg-medical-accent/20 gap-2 min-w-fit transition-all duration-300 ${
+              activeTab === 'study' ? 'bg-medical-accent/30 text-medical-primary font-medium shadow-sm' : ''
+            }`}
+            onClick={() => setActiveTab('study')}
+          >
             <Brain className="w-4 h-4" />
             Study
           </Button>
-          <Button variant="ghost" className="rounded-full hover:bg-accent gap-2 min-w-fit">
+          <Button 
+            variant="ghost" 
+            className={`rounded-full hover:bg-medical-accent/20 gap-2 min-w-fit transition-all duration-300 ${
+              activeTab === 'library' ? 'bg-medical-accent/30 text-medical-primary font-medium shadow-sm' : ''
+            }`}
+            onClick={() => setActiveTab('library')}
+          >
             <Book className="w-4 h-4" />
             Library
           </Button>
-          <Button variant="ghost" className="rounded-full hover:bg-accent gap-2 min-w-fit">
+          <Button 
+            variant="ghost" 
+            className={`rounded-full hover:bg-medical-accent/20 gap-2 min-w-fit transition-all duration-300 ${
+              activeTab === 'recent' ? 'bg-medical-accent/30 text-medical-primary font-medium shadow-sm' : ''
+            }`}
+            onClick={() => setActiveTab('recent')}
+          >
             <Clock className="w-4 h-4" />
             Recent
           </Button>
@@ -82,7 +101,7 @@ const Index = () => {
           {!showFlashcards && (
             <Button 
               onClick={() => setShowFlashcards(true)}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-8 py-6 gap-2 shadow-lg transition-transform hover:scale-105"
+              className="bg-medical-primary hover:bg-medical-primary/90 text-white rounded-full px-8 py-6 gap-2 shadow-lg transition-all duration-300 hover:scale-105"
             >
               <Plus className="w-5 h-5" />
               Generate Flashcards
@@ -91,9 +110,9 @@ const Index = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full hover:bg-accent transition-colors"
+            className="rounded-full hover:bg-medical-accent/20 transition-all duration-300"
           >
-            <Heart className="w-6 h-6" />
+            <Heart className="w-6 h-6 text-medical-primary" />
           </Button>
         </div>
 
@@ -101,7 +120,7 @@ const Index = () => {
           {/* Upload section */}
           <div className="bg-card rounded-xl p-6 hover:bg-accent/50 transition-colors border">
             <div className="flex items-center gap-4 mb-4">
-              <Hospital className="w-6 h-6 text-primary" />
+              <Hospital className="w-6 h-6 text-medical-primary" />
               <h2 className="text-xl font-bold">Upload Medical Documents</h2>
             </div>
             <FileUpload />

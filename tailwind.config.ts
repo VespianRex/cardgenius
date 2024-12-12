@@ -25,9 +25,9 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         medical: {
-          primary: "#2C5282",
-          secondary: "#4299E1",
-          accent: "#90CDF4",
+          primary: "#2C5282",    // Deep blue
+          secondary: "#4299E1",  // Medium blue
+          accent: "#90CDF4",     // Light blue
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
