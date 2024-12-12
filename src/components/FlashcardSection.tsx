@@ -3,7 +3,7 @@ import { Flashcard } from "./Flashcard";
 import { Button } from "./ui/button";
 import { ChevronLeft, ChevronRight, Keyboard } from "lucide-react";
 import { toast } from "sonner";
-import { StudyStats } from "./StudyStats";
+import { StudyProgress } from "./StudyProgress";
 import { Progress } from "./ui/progress";
 
 interface FlashcardSectionProps {
@@ -17,8 +17,6 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
   const [ratings, setRatings] = useState({ easy: 0, medium: 0, hard: 0 });
   const [isAnimating, setIsAnimating] = useState(false);
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
-
-  const progress = ((currentCardIndex + 1) / flashcards.length) * 100;
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -99,7 +97,7 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
 
   return (
     <div className="space-y-6">
-      <StudyStats 
+      <StudyProgress 
         cardsReviewed={ratings.easy + ratings.medium + ratings.hard}
         totalCards={flashcards.length}
         startTime={startTime}
@@ -107,11 +105,7 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
       />
 
       <div className="mb-6">
-        <div className="flex justify-between text-sm text-gray-400 mb-2">
-          <span>Progress</span>
-          <span>{Math.round(progress)}%</span>
-        </div>
-        <Progress value={progress} className="h-2" />
+        <Progress value={((currentCardIndex + 1) / flashcards.length) * 100} className="h-2" />
       </div>
 
       {showKeyboardShortcuts && (
@@ -138,7 +132,7 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
         </div>
       )}
 
-      <div className={`bg-white/5 rounded-xl p-6 transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
+      <div className={`transition-opacity duration-300 ${isAnimating ? 'opacity-0' : 'opacity-100'}`}>
         <Flashcard
           front={flashcards[currentCardIndex].front}
           back={flashcards[currentCardIndex].back}
