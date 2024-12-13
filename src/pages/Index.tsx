@@ -10,8 +10,8 @@ import {
   MenubarItem,
   MenubarMenu,
   MenubarSeparator,
-  MenubarShortcut,
   MenubarTrigger,
+  MenubarShortcut,
 } from "@/components/ui/menubar";
 
 const Index = () => {
