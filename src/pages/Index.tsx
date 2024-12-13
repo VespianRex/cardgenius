@@ -6,15 +6,9 @@ import { DeckList } from "@/components/DeckManagement/DeckList";
 import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard";
 import { Brain, Book, Clock, Plus, Heart, Stethoscope, Hospital, Settings, GraduationCap, History } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarTrigger,
-  MenubarShortcut,
-} from "@/components/ui/menubar";
+import { Header } from "@/components/layout/Header";
+import { MainNavigation } from "@/components/layout/MainNavigation";
+import { StudySection } from "@/components/sections/StudySection";
 
 const Index = () => {
   const [showFlashcards, setShowFlashcards] = useState(false);
@@ -58,19 +52,7 @@ const Index = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'study':
-        return showFlashcards ? (
-          <FlashcardSection flashcards={demoFlashcards} />
-        ) : (
-          <div className="space-y-8">
-            <div className="bg-card rounded-xl p-6 hover:bg-accent/50 transition-colors border">
-              <div className="flex items-center gap-4 mb-4">
-                <Hospital className="w-6 h-6 text-medical-primary" />
-                <h2 className="text-xl font-bold">Upload Medical Documents</h2>
-              </div>
-              <FileUpload />
-            </div>
-          </div>
-        );
+        return <StudySection showFlashcards={showFlashcards} demoFlashcards={demoFlashcards} />;
       case 'library':
         return <DeckList />;
       case 'analytics':
@@ -86,76 +68,10 @@ const Index = () => {
         <ThemeToggle />
       </div>
       
-      <header className="bg-gradient-to-b from-medical-primary/20 to-background p-8">
-        <div className="flex items-center gap-4">
-          <div className="p-4 bg-medical-primary rounded-lg shadow-lg">
-            <Stethoscope className="w-8 h-8 text-white" />
-          </div>
-          <div>
-            <h2 className="text-sm font-bold uppercase text-muted-foreground">Study Assistant</h2>
-            <h1 className="text-4xl font-bold mt-1">Medical Flashcards</h1>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="max-w-5xl mx-auto px-8 py-6">
-        <Menubar className="mb-8 bg-card border-medical-accent/20">
-          <MenubarMenu>
-            <MenubarTrigger 
-              className={`gap-2 ${activeTab === 'study' ? 'text-medical-primary' : ''}`}
-              onClick={() => setActiveTab('study')}
-            >
-              <Brain className="w-4 h-4" />
-              Study
-            </MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>
-                New Session
-                <MenubarShortcut>⌘N</MenubarShortcut>
-              </MenubarItem>
-              <MenubarItem>Review Due Cards</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>
-                Statistics
-                <MenubarShortcut>⌘S</MenubarShortcut>
-              </MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-
-          <MenubarMenu>
-            <MenubarTrigger 
-              className={`gap-2 ${activeTab === 'library' ? 'text-medical-primary' : ''}`}
-              onClick={() => setActiveTab('library')}
-            >
-              <Book className="w-4 h-4" />
-              Library
-            </MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>All Decks</MenubarItem>
-              <MenubarItem>Categories</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Import Deck</MenubarItem>
-              <MenubarItem>Export Deck</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-
-          <MenubarMenu>
-            <MenubarTrigger 
-              className={`gap-2 ${activeTab === 'analytics' ? 'text-medical-primary' : ''}`}
-              onClick={() => setActiveTab('analytics')}
-            >
-              <GraduationCap className="w-4 h-4" />
-              Analytics
-            </MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>Overview</MenubarItem>
-              <MenubarItem>Detailed Stats</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Export Report</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-        </Menubar>
-
+        <MainNavigation activeTab={activeTab} onTabChange={setActiveTab} />
         {renderContent()}
       </main>
     </div>
