@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Folder, FolderPlus, MoreVertical, Import, Export } from "lucide-react";
+import { Folder, FolderPlus, MoreVertical, Import, ArrowUpRight } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -94,7 +94,7 @@ export const DeckList = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem onClick={() => handleExport(deck.id)}>
-                    <Export className="w-4 h-4 mr-2" />
+                    <ArrowUpRight className="w-4 h-4 mr-2" />
                     Export
                   </DropdownMenuItem>
                   <DropdownMenuItem 
