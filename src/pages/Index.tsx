@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/FileUpload";
 import { FlashcardSection } from "@/components/FlashcardSection";
+import { DeckList } from "@/components/DeckManagement/DeckList";
 import { Brain, Book, Clock, Plus, Heart, Stethoscope, Hospital, Settings, GraduationCap, History } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
@@ -16,7 +17,7 @@ import {
 
 const Index = () => {
   const [showFlashcards, setShowFlashcards] = useState(false);
-  const [activeTab, setActiveTab] = useState('study');
+  const [activeTab, setActiveTab] = useState('library');
 
   const demoFlashcards = [
     {
@@ -53,13 +54,35 @@ const Index = () => {
     }
   ];
 
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'study':
+        return showFlashcards ? (
+          <FlashcardSection flashcards={demoFlashcards} />
+        ) : (
+          <div className="space-y-8">
+            <div className="bg-card rounded-xl p-6 hover:bg-accent/50 transition-colors border">
+              <div className="flex items-center gap-4 mb-4">
+                <Hospital className="w-6 h-6 text-medical-primary" />
+                <h2 className="text-xl font-bold">Upload Medical Documents</h2>
+              </div>
+              <FileUpload />
+            </div>
+          </div>
+        );
+      case 'library':
+        return <DeckList />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
       
-      {/* Header section */}
       <header className="bg-gradient-to-b from-medical-primary/20 to-background p-8">
         <div className="flex items-center gap-4">
           <div className="p-4 bg-medical-primary rounded-lg shadow-lg">
@@ -73,10 +96,12 @@ const Index = () => {
       </header>
 
       <main className="max-w-5xl mx-auto px-8 py-6">
-        {/* Enhanced Navigation Menu */}
         <Menubar className="mb-8 bg-card border-medical-accent/20">
           <MenubarMenu>
-            <MenubarTrigger className={`gap-2 ${activeTab === 'study' ? 'text-medical-primary' : ''}`} onClick={() => setActiveTab('study')}>
+            <MenubarTrigger 
+              className={`gap-2 ${activeTab === 'study' ? 'text-medical-primary' : ''}`}
+              onClick={() => setActiveTab('study')}
+            >
               <Brain className="w-4 h-4" />
               Study
             </MenubarTrigger>
@@ -95,7 +120,10 @@ const Index = () => {
           </MenubarMenu>
 
           <MenubarMenu>
-            <MenubarTrigger className={`gap-2 ${activeTab === 'library' ? 'text-medical-primary' : ''}`} onClick={() => setActiveTab('library')}>
+            <MenubarTrigger 
+              className={`gap-2 ${activeTab === 'library' ? 'text-medical-primary' : ''}`}
+              onClick={() => setActiveTab('library')}
+            >
               <Book className="w-4 h-4" />
               Library
             </MenubarTrigger>
@@ -109,7 +137,10 @@ const Index = () => {
           </MenubarMenu>
 
           <MenubarMenu>
-            <MenubarTrigger className={`gap-2 ${activeTab === 'recent' ? 'text-medical-primary' : ''}`} onClick={() => setActiveTab('recent')}>
+            <MenubarTrigger 
+              className={`gap-2 ${activeTab === 'recent' ? 'text-medical-primary' : ''}`}
+              onClick={() => setActiveTab('recent')}
+            >
               <Clock className="w-4 h-4" />
               Recent
             </MenubarTrigger>
@@ -122,39 +153,7 @@ const Index = () => {
           </MenubarMenu>
         </Menubar>
 
-        {/* Action buttons */}
-        <div className="flex items-center gap-4 mb-8">
-          {!showFlashcards && (
-            <Button 
-              onClick={() => setShowFlashcards(true)}
-              className="bg-medical-primary hover:bg-medical-primary/90 text-white rounded-full px-8 py-6 gap-2 shadow-lg transition-all duration-300 hover:scale-105"
-            >
-              <Plus className="w-5 h-5" />
-              Generate Flashcards
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full hover:bg-medical-accent/20 transition-all duration-300"
-          >
-            <Heart className="w-6 h-6 text-medical-primary" />
-          </Button>
-        </div>
-
-        <div className="space-y-8">
-          {/* Upload section */}
-          <div className="bg-card rounded-xl p-6 hover:bg-accent/50 transition-colors border">
-            <div className="flex items-center gap-4 mb-4">
-              <Hospital className="w-6 h-6 text-medical-primary" />
-              <h2 className="text-xl font-bold">Upload Medical Documents</h2>
-            </div>
-            <FileUpload />
-          </div>
-
-          {/* Flashcards section */}
-          {showFlashcards && <FlashcardSection flashcards={demoFlashcards} />}
-        </div>
+        {renderContent()}
       </main>
     </div>
   );
