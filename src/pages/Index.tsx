@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/FileUpload";
 import { FlashcardSection } from "@/components/FlashcardSection";
 import { DeckList } from "@/components/DeckManagement/DeckList";
+import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard";
 import { Brain, Book, Clock, Plus, Heart, Stethoscope, Hospital, Settings, GraduationCap, History } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
@@ -72,6 +73,8 @@ const Index = () => {
         );
       case 'library':
         return <DeckList />;
+      case 'analytics':
+        return <AnalyticsDashboard />;
       default:
         return null;
     }
@@ -138,17 +141,17 @@ const Index = () => {
 
           <MenubarMenu>
             <MenubarTrigger 
-              className={`gap-2 ${activeTab === 'recent' ? 'text-medical-primary' : ''}`}
-              onClick={() => setActiveTab('recent')}
+              className={`gap-2 ${activeTab === 'analytics' ? 'text-medical-primary' : ''}`}
+              onClick={() => setActiveTab('analytics')}
             >
-              <Clock className="w-4 h-4" />
-              Recent
+              <GraduationCap className="w-4 h-4" />
+              Analytics
             </MenubarTrigger>
             <MenubarContent>
-              <MenubarItem>Last Session</MenubarItem>
-              <MenubarItem>Study History</MenubarItem>
+              <MenubarItem>Overview</MenubarItem>
+              <MenubarItem>Detailed Stats</MenubarItem>
               <MenubarSeparator />
-              <MenubarItem>Progress Report</MenubarItem>
+              <MenubarItem>Export Report</MenubarItem>
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
