@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Flashcard } from "./Flashcard";
-import { Keyboard, Timer } from "lucide-react";
+import { Keyboard } from "lucide-react";
 import { toast } from "sonner";
 import { StudyProgress } from "./StudyProgress";
 import { Progress } from "./ui/progress";
@@ -9,6 +9,8 @@ import { KeyboardShortcuts } from "./KeyboardShortcuts";
 import { NavigationControls } from "./NavigationControls";
 import { DifficultyRating } from "./DifficultyRating";
 import { QuickActions } from "./QuickActions";
+import { StudyTimer } from "./StudyTimer";
+import { KeyboardManager } from "./KeyboardManager";
 
 interface FlashcardSectionProps {
   flashcards: Array<{ front: string; back: string }>;
@@ -21,64 +23,7 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
   const [ratings, setRatings] = useState({ easy: 0, medium: 0, hard: 0 });
   const [isAnimating, setIsAnimating] = useState(false);
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
-  const [studyTime, setStudyTime] = useState(0);
   const [isBreakTime, setIsBreakTime] = useState(false);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setStudyTime(prev => prev + 1);
-      
-      // Suggest break every 25 minutes
-      if (studyTime > 0 && studyTime % 1500 === 0 && !isBreakTime) {
-        toast.info("Time for a 5-minute break! 🎯", {
-          duration: 5000,
-          action: {
-            label: "Take Break",
-            onClick: () => setIsBreakTime(true),
-          },
-        });
-      }
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [studyTime]);
-
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
-        return;
-      }
-
-      switch (event.key.toLowerCase()) {
-        case 'arrowleft':
-          if (currentCardIndex > 0) handlePrevCard();
-          break;
-        case 'arrowright':
-          if (currentCardIndex < flashcards.length - 1) handleNextCard();
-          break;
-        case ' ':
-          event.preventDefault();
-          const cardElement = document.querySelector('.flashcard') as HTMLElement;
-          if (cardElement) cardElement.click();
-          break;
-        case 'e':
-          if (showRating) handleDifficultyRating('easy');
-          break;
-        case 'm':
-          if (showRating) handleDifficultyRating('medium');
-          break;
-        case 'h':
-          if (showRating) handleDifficultyRating('hard');
-          break;
-        case 'k':
-          setShowKeyboardShortcuts(prev => !prev);
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentCardIndex, flashcards.length, showRating]);
 
   const handleNextCard = () => {
     if (currentCardIndex < flashcards.length - 1) {
@@ -119,12 +64,6 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
     handleNextCard();
   };
 
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
-
   return (
     <div className="space-y-6">
       <StudyProgress 
@@ -139,11 +78,25 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
           value={((currentCardIndex + 1) / flashcards.length) * 100} 
           className="h-2 flex-1 mr-4"
         />
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Timer className="w-4 h-4" />
-          {formatTime(studyTime)}
-        </div>
+        <StudyTimer 
+          onBreakStart={() => setIsBreakTime(true)}
+          onBreakEnd={() => setIsBreakTime(false)}
+        />
       </div>
+
+      <KeyboardManager 
+        onNavigateLeft={handlePrevCard}
+        onNavigateRight={handleNextCard}
+        onFlipCard={() => {
+          const cardElement = document.querySelector('.flashcard') as HTMLElement;
+          if (cardElement) cardElement.click();
+        }}
+        onRateEasy={() => handleDifficultyRating('easy')}
+        onRateMedium={() => handleDifficultyRating('medium')}
+        onRateHard={() => handleDifficultyRating('hard')}
+        onToggleShortcuts={() => setShowKeyboardShortcuts(prev => !prev)}
+        showRating={showRating}
+      />
 
       <KeyboardShortcuts 
         isVisible={showKeyboardShortcuts}
