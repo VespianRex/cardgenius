@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { FileUpload } from "@/components/FileUpload";
-import { FlashcardSection } from "@/components/FlashcardSection";
-import { DeckList } from "@/components/DeckManagement/DeckList";
-import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard";
-import { Brain, Book, Clock, Plus, Heart, Stethoscope, Hospital, Settings, GraduationCap, History } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Header } from "@/components/layout/Header";
 import { MainNavigation } from "@/components/layout/MainNavigation";
 import { StudySection } from "@/components/sections/StudySection";
+import { DeckList } from "@/components/DeckManagement/DeckList";
+import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard";
+import { FlashcardEditor } from "@/components/FlashcardManagement/FlashcardEditor";
+import { FlashcardBulkImport } from "@/components/FlashcardManagement/FlashcardBulkImport";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 const Index = () => {
   const [showFlashcards, setShowFlashcards] = useState(false);
   const [activeTab, setActiveTab] = useState('library');
+  const [showEditor, setShowEditor] = useState(false);
 
   const demoFlashcards = [
     {
@@ -49,12 +50,38 @@ const Index = () => {
     }
   ];
 
+  const handleSaveCard = (card: { front: string; back: string; tags: string[] }) => {
+    console.log("Saving card:", card);
+    setShowEditor(false);
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'study':
         return <StudySection showFlashcards={showFlashcards} demoFlashcards={demoFlashcards} />;
       case 'library':
-        return <DeckList />;
+        return (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">Flashcard Library</h2>
+              <Button onClick={() => setShowEditor(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                New Card
+              </Button>
+            </div>
+            {showEditor ? (
+              <FlashcardEditor
+                onSave={handleSaveCard}
+                onCancel={() => setShowEditor(false)}
+              />
+            ) : (
+              <>
+                <FlashcardBulkImport />
+                <DeckList />
+              </>
+            )}
+          </div>
+        );
       case 'analytics':
         return <AnalyticsDashboard />;
       default:
@@ -70,7 +97,7 @@ const Index = () => {
       
       <Header />
 
-      <main className="max-w-5xl mx-auto px-8 py-6">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <MainNavigation activeTab={activeTab} onTabChange={setActiveTab} />
         {renderContent()}
       </main>
