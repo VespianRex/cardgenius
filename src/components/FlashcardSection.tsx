@@ -5,7 +5,7 @@ import { QuickActions } from "./QuickActions";
 import { KeyboardManager } from "./KeyboardManager";
 import { StudyHeader } from "./study/StudyHeader";
 import { StudyControls } from "./study/StudyControls";
-import { calculateNextReview } from "../utils/srsSystem";
+import { calculateNextReview, isCardDue } from "../utils/srsSystem";
 
 interface FlashcardSectionProps {
   flashcards: Array<{ front: string; back: string }>;
