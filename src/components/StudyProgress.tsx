@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Brain, Zap, Clock, Trophy } from 'lucide-react';
+import { Brain, Zap, Clock, Trophy, Flame } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface StudyProgressProps {
@@ -13,11 +13,11 @@ interface StudyProgressProps {
     hard: number;
   };
   startTime: Date;
+  streak: number;
 }
 
-export const StudyProgress = ({ totalCards, cardsReviewed, ratings, startTime }: StudyProgressProps) => {
+export const StudyProgress = ({ totalCards, cardsReviewed, ratings, startTime, streak }: StudyProgressProps) => {
   const [studyDuration, setStudyDuration] = useState('0:00');
-  const [streakCount, setStreakCount] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -31,18 +31,11 @@ export const StudyProgress = ({ totalCards, cardsReviewed, ratings, startTime }:
     return () => clearInterval(timer);
   }, [startTime]);
 
-  useEffect(() => {
-    if (ratings.easy > 0 && ratings.easy % 5 === 0) {
-      setStreakCount(prev => prev + 1);
-      toast.success('Great streak! Keep going! 🎯');
-    }
-  }, [ratings.easy]);
-
   const progressPercentage = (cardsReviewed / totalCards) * 100;
   const masteryScore = ((ratings.easy * 3 + ratings.medium * 2 + ratings.hard) / (cardsReviewed * 3)) * 100 || 0;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 animate-fade-in">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 animate-fade-in">
       <Card className="p-6 bg-gradient-to-br from-medical-primary/5 to-transparent border-medical-accent/20">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-medical-primary/10 rounded-lg">
@@ -89,8 +82,19 @@ export const StudyProgress = ({ totalCards, cardsReviewed, ratings, startTime }:
           </div>
           <h3 className="font-semibold">Study Streak</h3>
         </div>
-        <p className="text-2xl font-bold">{streakCount}</p>
+        <p className="text-2xl font-bold">{streak}</p>
         <p className="text-sm text-muted-foreground mt-1">Current streak</p>
+      </Card>
+
+      <Card className="p-6 bg-gradient-to-br from-medical-accent/5 to-transparent border-medical-accent/20">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2 bg-medical-accent/10 rounded-lg">
+            <Flame className="w-5 h-5 text-medical-accent" />
+          </div>
+          <h3 className="font-semibold">Current Streak</h3>
+        </div>
+        <p className="text-2xl font-bold">{streak}</p>
+        <p className="text-sm text-muted-foreground mt-1">Cards in a row</p>
       </Card>
     </div>
   );
