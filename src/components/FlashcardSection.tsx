@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Flashcard } from "./Flashcard";
-import { Keyboard } from "lucide-react";
+import { Keyboard, Timer } from "lucide-react";
 import { toast } from "sonner";
 import { StudyProgress } from "./StudyProgress";
 import { Progress } from "./ui/progress";
@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import { KeyboardShortcuts } from "./KeyboardShortcuts";
 import { NavigationControls } from "./NavigationControls";
 import { DifficultyRating } from "./DifficultyRating";
+import { QuickActions } from "./QuickActions";
 
 interface FlashcardSectionProps {
   flashcards: Array<{ front: string; back: string }>;
@@ -20,6 +21,27 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
   const [ratings, setRatings] = useState({ easy: 0, medium: 0, hard: 0 });
   const [isAnimating, setIsAnimating] = useState(false);
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
+  const [studyTime, setStudyTime] = useState(0);
+  const [isBreakTime, setIsBreakTime] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setStudyTime(prev => prev + 1);
+      
+      // Suggest break every 25 minutes
+      if (studyTime > 0 && studyTime % 1500 === 0 && !isBreakTime) {
+        toast.info("Time for a 5-minute break! 🎯", {
+          duration: 5000,
+          action: {
+            label: "Take Break",
+            onClick: () => setIsBreakTime(true),
+          },
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [studyTime]);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -97,6 +119,12 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
     handleNextCard();
   };
 
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
   return (
     <div className="space-y-6">
       <StudyProgress 
@@ -106,11 +134,15 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
         ratings={ratings}
       />
 
-      <div className="mb-6">
+      <div className="flex items-center justify-between mb-6">
         <Progress 
           value={((currentCardIndex + 1) / flashcards.length) * 100} 
-          className="h-2"
+          className="h-2 flex-1 mr-4"
         />
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Timer className="w-4 h-4" />
+          {formatTime(studyTime)}
+        </div>
       </div>
 
       <KeyboardShortcuts 
@@ -150,6 +182,8 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
           <Keyboard className="w-4 h-4" />
         </Button>
       </div>
+
+      <QuickActions />
     </div>
   );
 };
