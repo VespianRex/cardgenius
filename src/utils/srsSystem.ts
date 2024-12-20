@@ -41,11 +41,6 @@ export const calculateNextReview = (
   return { nextInterval, newEaseFactor };
 };
 
-export const isCardDue = (nextReview: Date): boolean => {
-  const now = new Date();
-  return now >= nextReview;
-};
-
 export const getCardStatus = (card: CardReview): 'new' | 'learning' | 'review' | 'graduated' => {
   if (!card.lastReviewed) return 'new';
   if (card.consecutiveCorrect < 2) return 'learning';
@@ -57,4 +52,33 @@ export const calculateRetentionScore = (reviews: CardReview[]): number => {
   if (reviews.length === 0) return 0;
   const successfulReviews = reviews.filter(r => r.consecutiveCorrect > 0);
   return (successfulReviews.length / reviews.length) * 100;
+};
+
+// New SRS features
+export const calculateOptimalReviewTime = (
+  lastReviewDate: Date,
+  performance: number,
+  currentInterval: number
+): Date => {
+  const nextInterval = calculateNextReview(performance, currentInterval, 2.5).nextInterval;
+  const optimalDate = new Date(lastReviewDate);
+  optimalDate.setDate(optimalDate.getDate() + nextInterval);
+  return optimalDate;
+};
+
+export const getPriorityScore = (card: CardReview): number => {
+  const now = new Date();
+  const daysOverdue = (now.getTime() - card.nextReview.getTime()) / (1000 * 60 * 60 * 24);
+  const overduePenalty = Math.max(0, daysOverdue * 0.1);
+  const difficultyBonus = (5 - card.easeFactor) * 0.2;
+  
+  return 1 + overduePenalty + difficultyBonus;
+};
+
+export const generateLearningPath = (cards: SRSCard[]): SRSCard[] => {
+  return cards.sort((a, b) => {
+    const priorityA = getPriorityScore(a);
+    const priorityB = getPriorityScore(b);
+    return priorityB - priorityA;
+  });
 };
