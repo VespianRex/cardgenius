@@ -6,6 +6,8 @@ import { KeyboardManager } from "./KeyboardManager";
 import { StudyHeader } from "./study/StudyHeader";
 import { StudyControls } from "./study/StudyControls";
 import { calculateNextReview, isCardDue } from "../utils/srsSystem";
+import { trackStudyProgress, generateStudyInsights } from "../utils/analyticsUtils";
+import { ReviewQueueManager } from "../utils/queueManager";
 
 interface FlashcardSectionProps {
   flashcards: Array<{ front: string; back: string }>;
@@ -20,36 +22,41 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
   const [studyMode, setStudyMode] = useState<'regular' | 'cram' | 'review' | 'scheduled'>('regular');
   const [streak, setStreak] = useState(0);
-  const [reviewQueue, setReviewQueue] = useState<number[]>([]);
+  const [queueManager, setQueueManager] = useState<ReviewQueueManager | null>(null);
+  const [analytics, setAnalytics] = useState({
+    totalCards: flashcards.length,
+    cardsReviewed: 0,
+    correctAnswers: 0,
+    streak: 0,
+    studyTime: 0,
+    retentionRate: 0,
+  });
 
   useEffect(() => {
-    const initializeQueue = () => {
-      switch (studyMode) {
-        case 'review':
-          const dueCards = flashcards
-            .map((_, index) => index)
-            .filter(index => isCardDue(new Date()));
-          setReviewQueue(dueCards);
-          break;
-        case 'cram':
-          setReviewQueue([...Array(flashcards.length)].map((_, i) => i));
-          break;
-        default:
-          setReviewQueue([...Array(flashcards.length)].map((_, i) => i));
-      }
-    };
-
-    initializeQueue();
+    const manager = new ReviewQueueManager(flashcards, {
+      mode: studyMode,
+      maxCards: 20,
+      includeNew: true,
+    });
+    setQueueManager(manager);
+    console.log('Initialized ReviewQueueManager');
   }, [studyMode, flashcards]);
 
   const handleNextCard = () => {
-    if (currentCardIndex < flashcards.length - 1) {
+    if (!queueManager) return;
+    
+    const nextIndex = queueManager.getNext();
+    if (nextIndex !== null) {
       setIsAnimating(true);
       setTimeout(() => {
-        setCurrentCardIndex(prev => prev + 1);
+        setCurrentCardIndex(nextIndex);
         setShowRating(false);
         setIsAnimating(false);
       }, 300);
+    } else {
+      toast.success("Study session complete! 🎉");
+      const insights = generateStudyInsights(analytics);
+      insights.forEach(insight => toast.info(insight));
     }
   };
 
@@ -71,16 +78,34 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
   };
 
   const handleDifficultyRating = (difficulty: 'easy' | 'medium' | 'hard', confidence: number) => {
+    if (!queueManager) return;
+
     setRatings(prev => ({
       ...prev,
       [difficulty]: prev[difficulty] + 1
     }));
 
+    // Update analytics
+    const newAnalytics = {
+      ...analytics,
+      cardsReviewed: analytics.cardsReviewed + 1,
+      correctAnswers: difficulty === 'easy' ? analytics.correctAnswers + 1 : analytics.correctAnswers,
+      streak: difficulty === 'easy' ? analytics.streak + 1 : 0,
+      studyTime: Math.floor((new Date().getTime() - startTime.getTime()) / 60000),
+      retentionRate: ((analytics.correctAnswers + (difficulty === 'easy' ? 1 : 0)) / (analytics.cardsReviewed + 1)) * 100,
+    };
+
+    setAnalytics(newAnalytics);
+    trackStudyProgress(newAnalytics);
+
     if (difficulty === 'easy' && confidence >= 4) {
-      setStreak(prev => prev + 1);
-      if ((streak + 1) % 5 === 0) {
-        toast.success(`🔥 ${streak + 1} card streak! Keep it up!`);
-      }
+      setStreak(prev => {
+        const newStreak = prev + 1;
+        if (newStreak % 5 === 0) {
+          toast.success(`🔥 ${newStreak} card streak! Keep it up!`);
+        }
+        return newStreak;
+      });
     } else {
       setStreak(0);
     }
@@ -92,11 +117,15 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
     );
 
     console.log(`Next review in ${nextInterval} days with ease factor ${newEaseFactor}`);
+    queueManager.markReviewed(currentCardIndex, confidence);
     handleNextCard();
   };
 
   const handleStudyModeChange = (mode: 'regular' | 'cram' | 'review' | 'scheduled') => {
     setStudyMode(mode);
+    if (queueManager) {
+      queueManager.reset();
+    }
     toast.info(`Switched to ${mode} mode`);
   };
 
@@ -135,7 +164,7 @@ export const FlashcardSection = ({ flashcards }: FlashcardSectionProps) => {
       
       <StudyControls 
         currentCardIndex={currentCardIndex}
-        totalCards={flashcards.length}
+        totalCards={queueManager?.getRemainingCount() ?? flashcards.length}
         showRating={showRating}
         showKeyboardShortcuts={showKeyboardShortcuts}
         onPrevious={handlePrevCard}
