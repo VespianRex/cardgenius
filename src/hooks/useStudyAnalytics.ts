@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
-import { trackStudyProgress, generateStudyInsights, analyzePerformanceTrends, type StudyAnalytics } from '../utils/analyticsUtils';
+import { 
+  StudyAnalytics, 
+  trackStudyProgress, 
+  generateStudyInsights, 
+  analyzePerformanceTrends,
+  exportAnalyticsCSV,
+  generateDetailedReport 
+} from '../utils/analytics';
 import { CardReview } from '../utils/srsSystem';
 import { toast } from 'sonner';
 
