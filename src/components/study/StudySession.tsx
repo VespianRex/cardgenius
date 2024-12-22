@@ -5,7 +5,7 @@ import { FlashcardDisplay } from "./FlashcardDisplay";
 import { StudyGoals } from "./StudyGoals";
 import { useStudySession } from "../../hooks/useStudySession";
 import { useStudyAnalytics } from "../../hooks/useStudyAnalytics";
-import { suggestMemoryTechnique, trackStudyHabit, getStudyStreak } from "../../utils/studyTechniques";
+import { suggestMemoryTechnique, trackStudyHabit } from "../../utils/studyTechniques";
 import { toast } from "sonner";
 
 interface StudySessionProps {
@@ -103,6 +103,7 @@ export const StudySession = ({ flashcards }: StudySessionProps) => {
         ratings={ratings}
         streak={streak}
         onStudyModeChange={setStudyMode}
+        onExportAnalytics={exportAnalytics}
       />
 
       <StudyGoals />

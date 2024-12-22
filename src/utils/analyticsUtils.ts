@@ -14,15 +14,15 @@ export interface StudyAnalytics {
     medium: number;
     hard: number;
   };
-  learningCurve: {
+  learningCurve: Array<{
     date: string;
     performance: number;
-  }[];
+  }>;
   reviewIntervals: number[];
-  tags: {
+  tags: Array<{
     tag: string;
     performance: number;
-  }[];
+  }>;
   studyHabits: {
     preferredTime: string;
     averageSessionDuration: number;
@@ -34,6 +34,19 @@ export interface StudyAnalytics {
     monthly: { target: number; achieved: number };
   };
 }
+
+export const analyzePerformanceTrends = (reviews: CardReview[]) => {
+  const recentReviews = reviews.slice(-10);
+  const averagePerformance = recentReviews.reduce((sum, review) => 
+    sum + (review.performance[review.performance.length - 1] || 0), 0) / recentReviews.length;
+
+  return {
+    trend: averagePerformance > 0.7 ? 'improving' : 'needs work',
+    recommendation: averagePerformance > 0.7 
+      ? 'Keep up the good work! Consider increasing review intervals.'
+      : 'Consider reviewing cards more frequently to improve retention.'
+  };
+};
 
 export const trackStudyProgress = (analytics: StudyAnalytics) => {
   console.log('Tracking study progress:', analytics);
