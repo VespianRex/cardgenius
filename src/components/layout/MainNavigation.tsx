@@ -1,4 +1,5 @@
 import { Brain, Book, GraduationCap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   Menubar,
   MenubarContent,
@@ -15,24 +16,33 @@ interface MainNavigationProps {
 }
 
 export const MainNavigation = ({ activeTab, onTabChange }: MainNavigationProps) => {
+  const navigate = useNavigate();
+
+  const handleNavigation = (path: string, tab: string) => {
+    onTabChange(tab);
+    navigate(path);
+  };
+
   return (
     <Menubar className="mb-8 bg-card border-medical-accent/20">
       <MenubarMenu>
         <MenubarTrigger 
-          className={`gap-2 ${activeTab === 'study' ? 'text-medical-primary' : ''}`}
-          onClick={() => onTabChange('study')}
+          className={`gap-2 cursor-pointer ${activeTab === 'study' ? 'text-medical-primary' : ''}`}
+          onClick={() => handleNavigation('/study', 'study')}
         >
           <Brain className="w-4 h-4" />
           Study
         </MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>
+          <MenubarItem onClick={() => handleNavigation('/study/new', 'study')}>
             New Session
             <MenubarShortcut>⌘N</MenubarShortcut>
           </MenubarItem>
-          <MenubarItem>Review Due Cards</MenubarItem>
+          <MenubarItem onClick={() => handleNavigation('/study/review', 'study')}>
+            Review Due Cards
+          </MenubarItem>
           <MenubarSeparator />
-          <MenubarItem>
+          <MenubarItem onClick={() => handleNavigation('/study/stats', 'study')}>
             Statistics
             <MenubarShortcut>⌘S</MenubarShortcut>
           </MenubarItem>
@@ -41,34 +51,48 @@ export const MainNavigation = ({ activeTab, onTabChange }: MainNavigationProps) 
 
       <MenubarMenu>
         <MenubarTrigger 
-          className={`gap-2 ${activeTab === 'library' ? 'text-medical-primary' : ''}`}
-          onClick={() => onTabChange('library')}
+          className={`gap-2 cursor-pointer ${activeTab === 'library' ? 'text-medical-primary' : ''}`}
+          onClick={() => handleNavigation('/library', 'library')}
         >
           <Book className="w-4 h-4" />
           Library
         </MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>All Decks</MenubarItem>
-          <MenubarItem>Categories</MenubarItem>
+          <MenubarItem onClick={() => handleNavigation('/library/decks', 'library')}>
+            All Decks
+          </MenubarItem>
+          <MenubarItem onClick={() => handleNavigation('/library/categories', 'library')}>
+            Categories
+          </MenubarItem>
           <MenubarSeparator />
-          <MenubarItem>Import Deck</MenubarItem>
-          <MenubarItem>Export Deck</MenubarItem>
+          <MenubarItem onClick={() => handleNavigation('/library/import', 'library')}>
+            Import Deck
+          </MenubarItem>
+          <MenubarItem onClick={() => handleNavigation('/library/export', 'library')}>
+            Export Deck
+          </MenubarItem>
         </MenubarContent>
       </MenubarMenu>
 
       <MenubarMenu>
         <MenubarTrigger 
-          className={`gap-2 ${activeTab === 'analytics' ? 'text-medical-primary' : ''}`}
-          onClick={() => onTabChange('analytics')}
+          className={`gap-2 cursor-pointer ${activeTab === 'analytics' ? 'text-medical-primary' : ''}`}
+          onClick={() => handleNavigation('/analytics', 'analytics')}
         >
           <GraduationCap className="w-4 h-4" />
           Analytics
         </MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>Overview</MenubarItem>
-          <MenubarItem>Detailed Stats</MenubarItem>
+          <MenubarItem onClick={() => handleNavigation('/analytics/overview', 'analytics')}>
+            Overview
+          </MenubarItem>
+          <MenubarItem onClick={() => handleNavigation('/analytics/detailed', 'analytics')}>
+            Detailed Stats
+          </MenubarItem>
           <MenubarSeparator />
-          <MenubarItem>Export Report</MenubarItem>
+          <MenubarItem onClick={() => handleNavigation('/analytics/export', 'analytics')}>
+            Export Report
+          </MenubarItem>
         </MenubarContent>
       </MenubarMenu>
     </Menubar>

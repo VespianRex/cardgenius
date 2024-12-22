@@ -8,6 +8,9 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Help from "./pages/Help";
 import NotFound from "./pages/NotFound";
+import Study from "./pages/Study";
+import Library from "./pages/Library";
+import Analytics from "./pages/Analytics";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +22,9 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/study/*" element={<Study />} />
+          <Route path="/library/*" element={<Library />} />
+          <Route path="/analytics/*" element={<Analytics />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/help" element={<Help />} />
