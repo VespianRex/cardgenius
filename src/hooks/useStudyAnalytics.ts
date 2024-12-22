@@ -1,11 +1,13 @@
-import { useState } from 'react';
-import { trackStudyProgress, generateStudyInsights } from '../utils/analyticsUtils';
+import { useState, useEffect } from 'react';
+import { trackStudyProgress, generateStudyInsights, analyzePerformanceTrends } from '../utils/analyticsUtils';
+import { CardReview } from '../utils/srsSystem';
 import { toast } from 'sonner';
 
 export const useStudyAnalytics = () => {
   const [startTime] = useState(new Date());
   const [ratings, setRatings] = useState({ easy: 0, medium: 0, hard: 0 });
   const [streak, setStreak] = useState(0);
+  const [reviews, setReviews] = useState<CardReview[]>([]);
   const [analytics, setAnalytics] = useState({
     totalCards: 0,
     cardsReviewed: 0,
@@ -13,13 +15,51 @@ export const useStudyAnalytics = () => {
     streak: 0,
     studyTime: 0,
     retentionRate: 0,
+    averageResponseTime: 0,
+    performanceByDifficulty: {
+      easy: 0,
+      medium: 0,
+      hard: 0,
+    },
+    learningCurve: [],
+    reviewIntervals: [],
+    tags: [],
   });
 
-  const updateAnalytics = (difficulty: 'easy' | 'medium' | 'hard', confidence: number) => {
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnalytics(prev => ({
+        ...prev,
+        studyTime: Math.floor((new Date().getTime() - startTime.getTime()) / 60000)
+      }));
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, [startTime]);
+
+  const updateAnalytics = (difficulty: 'easy' | 'medium' | 'hard', confidence: number, responseTime: number) => {
     setRatings(prev => ({
       ...prev,
       [difficulty]: prev[difficulty] + 1
     }));
+
+    const newReview: CardReview = {
+      cardId: Date.now().toString(),
+      lastReviewed: new Date(),
+      nextReview: new Date(),
+      interval: 0,
+      easeFactor: 2.5,
+      consecutiveCorrect: difficulty === 'easy' ? 1 : 0,
+      performance: [confidence],
+      tags: [],
+      metadata: {
+        totalReviews: 1,
+        correctReviews: difficulty === 'easy' ? 1 : 0,
+        averageResponse: responseTime,
+      },
+    };
+
+    setReviews(prev => [...prev, newReview]);
 
     const newAnalytics = {
       ...analytics,
@@ -28,11 +68,16 @@ export const useStudyAnalytics = () => {
       streak: difficulty === 'easy' ? analytics.streak + 1 : 0,
       studyTime: Math.floor((new Date().getTime() - startTime.getTime()) / 60000),
       retentionRate: ((analytics.correctAnswers + (difficulty === 'easy' ? 1 : 0)) / (analytics.cardsReviewed + 1)) * 100,
+      averageResponseTime: (analytics.averageResponseTime * analytics.cardsReviewed + responseTime) / (analytics.cardsReviewed + 1),
+      performanceByDifficulty: {
+        ...analytics.performanceByDifficulty,
+        [difficulty]: analytics.performanceByDifficulty[difficulty] + 1
+      },
     };
 
     setAnalytics(newAnalytics);
-    trackStudyProgress(newAnalytics);
-
+    const trackedAnalytics = trackStudyProgress(newAnalytics);
+    
     if (difficulty === 'easy' && confidence >= 4) {
       setStreak(prev => {
         const newStreak = prev + 1;
@@ -47,6 +92,11 @@ export const useStudyAnalytics = () => {
 
     const insights = generateStudyInsights(newAnalytics);
     insights.forEach(insight => toast.info(insight));
+
+    const performanceTrend = analyzePerformanceTrends(reviews);
+    if (reviews.length % 10 === 0) {
+      toast.info(`Study Trend: ${performanceTrend.recommendation}`);
+    }
   };
 
   return {
@@ -54,6 +104,7 @@ export const useStudyAnalytics = () => {
     streak,
     startTime,
     ratings,
+    reviews,
     updateAnalytics
   };
 };

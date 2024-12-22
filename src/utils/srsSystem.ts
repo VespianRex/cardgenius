@@ -1,16 +1,26 @@
-interface CardReview {
+import { toast } from 'sonner';
+
+export interface CardReview {
   cardId: string;
   lastReviewed: Date;
   nextReview: Date;
   interval: number;
   easeFactor: number;
   consecutiveCorrect: number;
+  performance: number[];
+  tags: string[];
+  metadata: {
+    totalReviews: number;
+    correctReviews: number;
+    averageResponse: number;
+  };
 }
 
-interface SRSCard extends CardReview {
+export interface SRSCard extends CardReview {
   front: string;
   back: string;
   status: 'new' | 'learning' | 'review' | 'graduated';
+  preloaded?: boolean;
 }
 
 export const calculateNextReview = (
@@ -20,12 +30,11 @@ export const calculateNextReview = (
 ): { nextInterval: number; newEaseFactor: number } => {
   console.log(`Calculating next review - Confidence: ${confidence}, Current Interval: ${currentInterval}, Ease Factor: ${easeFactor}`);
   
-  // SM-2 algorithm implementation
   const newEaseFactor = Math.max(1.3, easeFactor + (0.1 - (5 - confidence) * (0.08 + (5 - confidence) * 0.02)));
   let nextInterval: number;
 
   if (confidence < 3) {
-    nextInterval = 1; // Reset interval if rating is too low
+    nextInterval = 1;
     console.log('Low confidence - resetting interval to 1 day');
   } else if (currentInterval === 0) {
     nextInterval = 1;
@@ -54,7 +63,6 @@ export const calculateRetentionScore = (reviews: CardReview[]): number => {
   return (successfulReviews.length / reviews.length) * 100;
 };
 
-// New SRS features
 export const calculateOptimalReviewTime = (
   lastReviewDate: Date,
   performance: number,
@@ -81,4 +89,36 @@ export const generateLearningPath = (cards: SRSCard[]): SRSCard[] => {
     const priorityB = getPriorityScore(b);
     return priorityB - priorityA;
   });
+};
+
+export const preloadCards = async (cards: SRSCard[]): Promise<SRSCard[]> => {
+  console.log('Starting card preloading...');
+  
+  const preloadPromises = cards.map(async (card) => {
+    if (card.preloaded) return card;
+
+    try {
+      // Preload any images in the content
+      const imageUrls = [...card.front.matchAll(/\bhttps?:\/\/\S+?(?:jpg|jpeg|gif|png|webp)/gi)];
+      await Promise.all(
+        imageUrls.map((url) => {
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = url[0];
+          });
+        })
+      );
+
+      return { ...card, preloaded: true };
+    } catch (error) {
+      console.error(`Failed to preload card ${card.cardId}:`, error);
+      return card;
+    }
+  });
+
+  const preloadedCards = await Promise.all(preloadPromises);
+  console.log(`Preloaded ${preloadedCards.filter(c => c.preloaded).length} cards`);
+  return preloadedCards;
 };
