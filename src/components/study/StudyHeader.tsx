@@ -14,6 +14,7 @@ interface StudyHeaderProps {
   };
   streak: number;
   onStudyModeChange: (mode: 'regular' | 'cram' | 'review' | 'scheduled') => void;
+  onExportAnalytics: () => void;
 }
 
 export const StudyHeader = ({
@@ -22,11 +23,20 @@ export const StudyHeader = ({
   startTime,
   ratings,
   streak,
-  onStudyModeChange
+  onStudyModeChange,
+  onExportAnalytics
 }: StudyHeaderProps) => {
   return (
     <div className="space-y-6 mb-8">
-      <StudyModeSelector onSelectMode={onStudyModeChange} />
+      <div className="flex justify-between items-center">
+        <StudyModeSelector onSelectMode={onStudyModeChange} />
+        <button
+          onClick={onExportAnalytics}
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+        >
+          Export Analytics
+        </button>
+      </div>
       
       <StudyProgress 
         cardsReviewed={ratings.easy + ratings.medium + ratings.hard}
