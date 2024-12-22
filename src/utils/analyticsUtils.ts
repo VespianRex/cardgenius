@@ -23,6 +23,16 @@ export interface StudyAnalytics {
     tag: string;
     performance: number;
   }[];
+  studyHabits: {
+    preferredTime: string;
+    averageSessionDuration: number;
+    consistencyScore: number;
+  };
+  personalGoals: {
+    daily: { target: number; achieved: number };
+    weekly: { target: number; achieved: number };
+    monthly: { target: number; achieved: number };
+  };
 }
 
 export const trackStudyProgress = (analytics: StudyAnalytics) => {
@@ -76,46 +86,64 @@ export const generateStudyInsights = (analytics: StudyAnalytics) => {
   return insights;
 };
 
-export const exportAnalytics = (analytics: StudyAnalytics): string => {
-  const data = {
-    ...analytics,
-    exportDate: new Date().toISOString(),
-    summary: {
-      totalStudyTime: analytics.studyTime,
-      averageRetention: analytics.retentionRate,
-      totalCards: analytics.totalCards,
-      masteryLevel: analytics.retentionRate >= 80 ? 'High' : 'Improving',
-    }
-  };
+export const analyzeStudyHabits = (sessions: any[]): void => {
+  const timeDistribution = sessions.reduce((acc, session) => {
+    const hour = new Date(session.date).getHours();
+    acc[hour] = (acc[hour] || 0) + 1;
+    return acc;
+  }, {});
 
-  return JSON.stringify(data, null, 2);
+  const preferredHour = Object.entries(timeDistribution)
+    .sort(([, a], [, b]) => (b as number) - (a as number))[0][0];
+
+  toast.info(`Your most productive study time appears to be around ${preferredHour}:00`);
 };
 
-export const analyzePerformanceTrends = (reviews: CardReview[]): {
-  trend: 'improving' | 'stable' | 'declining';
-  recommendation: string;
-} => {
-  const recentReviews = reviews.slice(-10);
-  const averagePerformance = recentReviews.reduce((sum, review) => 
-    sum + (review.performance.reduce((a, b) => a + b, 0) / review.performance.length), 0
-  ) / recentReviews.length;
+export const generateDetailedReport = (analytics: StudyAnalytics): string => {
+  const report = {
+    overview: {
+      totalStudyTime: analytics.studyTime,
+      totalCardsReviewed: analytics.cardsReviewed,
+      averageRetention: analytics.retentionRate,
+      streak: analytics.streak
+    },
+    performance: {
+      byDifficulty: analytics.performanceByDifficulty,
+      learningCurve: analytics.learningCurve,
+      responseTime: analytics.averageResponseTime
+    },
+    habits: analytics.studyHabits,
+    goals: analytics.personalGoals,
+    recommendations: generateStudyInsights(analytics)
+  };
 
-  if (averagePerformance >= 4) {
-    return {
-      trend: 'improving',
-      recommendation: 'Consider increasing interval lengths for better long-term retention'
-    };
-  } else if (averagePerformance >= 3) {
-    return {
-      trend: 'stable',
-      recommendation: 'Maintain current study pattern'
-    };
-  } else {
-    return {
-      trend: 'declining',
-      recommendation: 'Review fundamentals and decrease intervals temporarily'
-    };
-  }
+  return JSON.stringify(report, null, 2);
+};
+
+export const exportAnalyticsCSV = (analytics: StudyAnalytics): string => {
+  const headers = [
+    'Date',
+    'Cards Reviewed',
+    'Retention Rate',
+    'Study Time',
+    'Average Response Time',
+    'Easy Cards',
+    'Medium Cards',
+    'Hard Cards'
+  ].join(',');
+
+  const data = [
+    new Date().toISOString(),
+    analytics.cardsReviewed,
+    analytics.retentionRate,
+    analytics.studyTime,
+    analytics.averageResponseTime,
+    analytics.performanceByDifficulty.easy,
+    analytics.performanceByDifficulty.medium,
+    analytics.performanceByDifficulty.hard
+  ].join(',');
+
+  return `${headers}\n${data}`;
 };
 
 export const generatePerformanceReport = (cards: SRSCard[]): string => {
@@ -131,7 +159,39 @@ export const generatePerformanceReport = (cards: SRSCard[]): string => {
     },
     averageEaseFactor: cards.reduce((sum, card) => sum + card.easeFactor, 0) / cards.length,
     averageInterval: cards.reduce((sum, card) => sum + card.interval, 0) / cards.length,
+    learningProgress: calculateLearningProgress(cards),
+    recommendations: generateRecommendations(cards)
   };
 
   return JSON.stringify(report, null, 2);
+};
+
+const calculateLearningProgress = (cards: SRSCard[]): number => {
+  const totalWeight = cards.length * 100;
+  const currentProgress = cards.reduce((sum, card) => {
+    switch (card.status) {
+      case 'graduated': return sum + 100;
+      case 'review': return sum + 75;
+      case 'learning': return sum + 25;
+      default: return sum;
+    }
+  }, 0);
+
+  return (currentProgress / totalWeight) * 100;
+};
+
+const generateRecommendations = (cards: SRSCard[]): string[] => {
+  const recommendations = [];
+  const strugglingCards = cards.filter(c => c.metadata.correctReviews / c.metadata.totalReviews < 0.6);
+  
+  if (strugglingCards.length > 0) {
+    recommendations.push('Consider reviewing these challenging cards more frequently');
+  }
+
+  const longIntervalCards = cards.filter(c => c.interval > 30);
+  if (longIntervalCards.length > 0) {
+    recommendations.push('Some cards have very long intervals. Consider a quick review');
+  }
+
+  return recommendations;
 };
