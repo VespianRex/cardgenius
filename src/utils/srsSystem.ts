@@ -1,3 +1,6 @@
+import { calculateMaturityLevel, getNextReviewInterval } from './srs/maturityLevels';
+import { analyzeLearningCurve, predictNextReviewSuccess } from './srs/learningCurve';
+import { saveToStorage, loadFromStorage } from './storage/srsStorage';
 import { toast } from 'sonner';
 
 export interface CardReview {
@@ -26,28 +29,29 @@ export interface SRSCard extends CardReview {
 export const calculateNextReview = (
   confidence: number,
   currentInterval: number,
-  easeFactor: number
+  easeFactor: number,
+  reviews: CardReview[]
 ): { nextInterval: number; newEaseFactor: number } => {
   console.log(`Calculating next review - Confidence: ${confidence}, Current Interval: ${currentInterval}, Ease Factor: ${easeFactor}`);
   
-  const newEaseFactor = Math.max(1.3, easeFactor + (0.1 - (5 - confidence) * (0.08 + (5 - confidence) * 0.02)));
-  let nextInterval: number;
+  const maturityLevel = calculateMaturityLevel(
+    reviews.length,
+    easeFactor,
+    currentInterval
+  );
 
-  if (confidence < 3) {
-    nextInterval = 1;
-    console.log('Low confidence - resetting interval to 1 day');
-  } else if (currentInterval === 0) {
-    nextInterval = 1;
-    console.log('First review - setting interval to 1 day');
-  } else if (currentInterval === 1) {
-    nextInterval = 6;
-    console.log('Second review - setting interval to 6 days');
-  } else {
-    nextInterval = Math.round(currentInterval * newEaseFactor);
-    console.log(`Calculated next interval: ${nextInterval} days`);
-  }
+  const learningCurve = analyzeLearningCurve(reviews);
+  const predictedSuccess = predictNextReviewSuccess(learningCurve, currentInterval);
 
-  return { nextInterval, newEaseFactor };
+  const newEaseFactor = Math.max(1.3, 
+    easeFactor + (0.1 - (5 - confidence) * (0.08 + (5 - confidence) * 0.02))
+  );
+
+  const baseInterval = getNextReviewInterval(maturityLevel, currentInterval, newEaseFactor);
+  const adjustedInterval = Math.round(baseInterval * (predictedSuccess > 0.9 ? 1.2 : 1));
+
+  console.log(`Calculated next interval: ${adjustedInterval} days (base: ${baseInterval})`);
+  return { nextInterval: adjustedInterval, newEaseFactor };
 };
 
 export const getCardStatus = (card: CardReview): 'new' | 'learning' | 'review' | 'graduated' => {
