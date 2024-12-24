@@ -53,19 +53,20 @@ export const useStudySession = (flashcards: Array<{ front: string; back: string 
     }
   };
 
-  const handleDifficultyRating = (difficulty: 'easy' | 'medium' | 'hard', confidence: number) => {
-    if (!queueManager) return;
+const handleDifficultyRating = (difficulty: 'easy' | 'medium' | 'hard', confidence: number) => {
+  if (!queueManager) return;
 
-    const { nextInterval, newEaseFactor } = calculateNextReview(
-      confidence,
-      1,
-      2.5
-    );
+  const { nextInterval, newEaseFactor } = calculateNextReview(
+    confidence,
+    1,
+    2.5,
+    [] // Pass empty array as default reviews
+  );
 
-    console.log(`Next review in ${nextInterval} days with ease factor ${newEaseFactor}`);
-    queueManager.markReviewed(currentCardIndex, confidence);
-    handleNextCard();
-  };
+  console.log(`Next review in ${nextInterval} days with ease factor ${newEaseFactor}`);
+  queueManager.markReviewed(currentCardIndex, confidence);
+  handleNextCard();
+};
 
   return {
     currentCardIndex,

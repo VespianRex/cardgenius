@@ -30,7 +30,7 @@ export const calculateNextReview = (
   confidence: number,
   currentInterval: number,
   easeFactor: number,
-  reviews: CardReview[]
+  reviews: CardReview[] = []
 ): { nextInterval: number; newEaseFactor: number } => {
   console.log(`Calculating next review - Confidence: ${confidence}, Current Interval: ${currentInterval}, Ease Factor: ${easeFactor}`);
   

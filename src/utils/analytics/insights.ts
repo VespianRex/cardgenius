@@ -28,12 +28,13 @@ export const generateStudyInsights = (analytics: StudyAnalytics) => {
   return insights;
 };
 
-export const analyzeStudyHabits = (sessions: any[]): string => {
-  const timeDistribution = sessions.reduce((acc, session) => {
-    const hour = new Date(session.date).getHours();
-    acc[hour] = (acc[hour] || 0) + 1;
-    return acc;
-  }, {} as Record<number, number>);
+export const analyzeStudyHabits = (sessions: { date: Date }[]): string => {
+  const timeDistribution: Record<number, number> = {};
+
+  sessions.forEach(session => {
+    const hour = session.date.getHours();
+    timeDistribution[hour] = (timeDistribution[hour] || 0) + 1;
+  });
 
   const preferredHour = Object.entries(timeDistribution)
     .sort(([, a], [, b]) => b - a)[0][0];
