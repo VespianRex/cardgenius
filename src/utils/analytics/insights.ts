@@ -1,5 +1,4 @@
 import { StudyAnalytics } from './types';
-import { CardReview } from '../srsSystem';
 
 export const generateStudyInsights = (analytics: StudyAnalytics) => {
   const insights = [];
@@ -29,15 +28,15 @@ export const generateStudyInsights = (analytics: StudyAnalytics) => {
   return insights;
 };
 
-export const analyzePerformanceTrends = (reviews: CardReview[]) => {
-  const recentReviews = reviews.slice(-10);
-  const averagePerformance = recentReviews.reduce((sum, review) => 
-    sum + (review.performance[review.performance.length - 1] || 0), 0) / recentReviews.length;
+export const analyzeStudyHabits = (sessions: any[]): string => {
+  const timeDistribution = sessions.reduce((acc, session) => {
+    const hour = new Date(session.date).getHours();
+    acc[hour] = (acc[hour] || 0) + 1;
+    return acc;
+  }, {} as Record<number, number>);
 
-  return {
-    trend: averagePerformance > 0.7 ? 'improving' : 'needs work',
-    recommendation: averagePerformance > 0.7 
-      ? 'Keep up the good work! Consider increasing review intervals.'
-      : 'Consider reviewing cards more frequently to improve retention.'
-  };
+  const preferredHour = Object.entries(timeDistribution)
+    .sort(([, a], [, b]) => b - a)[0][0];
+
+  return `Your most productive study time appears to be around ${preferredHour}:00`;
 };
