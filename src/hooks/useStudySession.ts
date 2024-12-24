@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 import { ReviewQueueManager } from '../utils/queueManager';
 import { calculateNextReview } from '../utils/srsSystem';
+import { saveToStorage, loadFromStorage } from '../utils/storage/persistenceManager';
+import { 
+  optimizeReviewSchedule, 
+  suggestStudyOptimizations,
+  trackLearningProgress 
+} from '../utils/learning/optimizationEngine';
 import { toast } from 'sonner';
 
 export const useStudySession = (flashcards: Array<{ front: string; back: string }>) => {
@@ -11,6 +17,12 @@ export const useStudySession = (flashcards: Array<{ front: string; back: string 
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
+    // Load saved study progress
+    const savedData = loadFromStorage();
+    if (savedData.cards.length > 0) {
+      console.log('Loaded saved study progress:', savedData);
+    }
+
     const manager = new ReviewQueueManager(flashcards, {
       mode: studyMode,
       maxCards: 20,
@@ -18,6 +30,9 @@ export const useStudySession = (flashcards: Array<{ front: string; back: string 
     });
     setQueueManager(manager);
     console.log('Initialized ReviewQueueManager with mode:', studyMode);
+
+    // Suggest optimizations based on previous reviews
+    suggestStudyOptimizations(savedData.reviews);
   }, [studyMode, flashcards]);
 
   const handleNextCard = () => {
@@ -33,6 +48,13 @@ export const useStudySession = (flashcards: Array<{ front: string; back: string 
       }, 300);
     } else {
       toast.success("Study session complete! 🎉");
+      
+      // Save progress
+      const savedData = loadFromStorage();
+      saveToStorage({
+        ...savedData,
+        lastSync: new Date().toISOString()
+      });
     }
   };
 
@@ -53,20 +75,53 @@ export const useStudySession = (flashcards: Array<{ front: string; back: string 
     }
   };
 
-const handleDifficultyRating = (difficulty: 'easy' | 'medium' | 'hard', confidence: number) => {
-  if (!queueManager) return;
+  const handleDifficultyRating = (difficulty: 'easy' | 'medium' | 'hard', confidence: number) => {
+    if (!queueManager) return;
 
-  const { nextInterval, newEaseFactor } = calculateNextReview(
-    confidence,
-    1,
-    2.5,
-    [] // Pass empty array as default reviews
-  );
+    const savedData = loadFromStorage();
+    const currentCard = flashcards[currentCardIndex];
+    
+    // Calculate optimized interval
+    const optimizedInterval = optimizeReviewSchedule(
+      currentCard as any,
+      savedData.reviews,
+      1
+    );
 
-  console.log(`Next review in ${nextInterval} days with ease factor ${newEaseFactor}`);
-  queueManager.markReviewed(currentCardIndex, confidence);
-  handleNextCard();
-};
+    const { nextInterval, newEaseFactor } = calculateNextReview(
+      confidence,
+      optimizedInterval,
+      2.5,
+      savedData.reviews
+    );
+
+    console.log(`Next review in ${nextInterval} days with ease factor ${newEaseFactor}`);
+    
+    // Track progress and save review
+    const review = {
+      cardId: currentCardIndex.toString(),
+      lastReviewed: new Date(),
+      nextReview: new Date(Date.now() + nextInterval * 24 * 60 * 60 * 1000),
+      interval: nextInterval,
+      easeFactor: newEaseFactor,
+      consecutiveCorrect: difficulty === 'easy' ? 1 : 0,
+      performance: [confidence],
+      tags: [],
+      metadata: {
+        totalReviews: 1,
+        correctReviews: difficulty === 'easy' ? 1 : 0,
+        averageResponse: 0,
+      },
+    };
+
+    saveToStorage({
+      reviews: [...savedData.reviews, review]
+    });
+
+    trackLearningProgress(currentCard as any, [...savedData.reviews, review]);
+    queueManager.markReviewed(currentCardIndex, confidence);
+    handleNextCard();
+  };
 
   return {
     currentCardIndex,
