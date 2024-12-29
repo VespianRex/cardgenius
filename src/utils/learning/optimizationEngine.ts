@@ -31,6 +31,13 @@ export const calculateLearningMetrics = (reviews: CardReview[]): LearningMetrics
   // Adjust difficulty based on performance
   const difficulty = reviews.reduce((sum, r) => sum + r.easeFactor, 0) / reviews.length;
 
+  console.log('Learning metrics calculated:', {
+    retentionRate,
+    averageInterval,
+    optimalTime,
+    difficulty
+  });
+
   return {
     retentionRate,
     averageInterval,
