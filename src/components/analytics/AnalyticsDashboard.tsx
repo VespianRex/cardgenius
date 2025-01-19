@@ -6,6 +6,9 @@ import { ProgressChart } from "./ProgressChart";
 import { SuccessRateChart } from "./SuccessRateChart";
 import { StudyTimeChart } from "./StudyTimeChart";
 import { SearchFilters } from "./SearchFilters";
+import { LearningPatterns } from "./LearningPatterns";
+import { AchievementSystem } from "../achievements/AchievementSystem";
+import { SmartCardOrganizer } from "../cards/SmartCardOrganizer";
 
 export const AnalyticsDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -13,11 +16,11 @@ export const AnalyticsDashboard = () => {
   // Demo data - in a real app, this would come from your backend
   const analyticsData = {
     dailyProgress: [
-      { date: "2024-01-01", cardsReviewed: 25 },
-      { date: "2024-01-02", cardsReviewed: 30 },
-      { date: "2024-01-03", cardsReviewed: 28 },
-      { date: "2024-01-04", cardsReviewed: 35 },
-      { date: "2024-01-05", cardsReviewed: 40 },
+      { date: "2024-01-01", cardsReviewed: 25, performance: 85, studyDuration: 45 },
+      { date: "2024-01-02", cardsReviewed: 30, performance: 88, studyDuration: 50 },
+      { date: "2024-01-03", cardsReviewed: 28, performance: 82, studyDuration: 40 },
+      { date: "2024-01-04", cardsReviewed: 35, performance: 90, studyDuration: 60 },
+      { date: "2024-01-05", cardsReviewed: 40, performance: 92, studyDuration: 55 },
     ],
     successRates: [
       { date: "2024-01-01", rate: 85 },
@@ -68,6 +71,18 @@ export const AnalyticsDashboard = () => {
           <h3 className="text-lg font-semibold mb-4">Study Time</h3>
           <StudyTimeChart data={analyticsData.studyTime} />
         </Card>
+      </div>
+
+      <LearningPatterns data={analyticsData.dailyProgress} />
+      
+      <div className="mt-8">
+        <h3 className="text-2xl font-bold mb-4">Achievements</h3>
+        <AchievementSystem />
+      </div>
+
+      <div className="mt-8">
+        <h3 className="text-2xl font-bold mb-4">Smart Card Organization</h3>
+        <SmartCardOrganizer />
       </div>
     </div>
   );
