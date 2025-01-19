@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
-import { Trophy, Award, Zap, Brain } from 'lucide-react';
+import { Trophy, Award, Zap, Brain, Sun, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Achievement {
@@ -40,6 +40,33 @@ export const AchievementSystem = () => {
       icon: <Brain className="w-6 h-6 text-purple-500" />,
       progress: 0,
       target: 90,
+      unlocked: false
+    },
+    {
+      id: 'early_bird',
+      title: 'Early Bird',
+      description: 'Complete a study session before 9 AM',
+      icon: <Sun className="w-6 h-6 text-orange-500" />,
+      progress: 0,
+      target: 1,
+      unlocked: false
+    },
+    {
+      id: 'perfect_recall',
+      title: 'Perfect Recall',
+      description: 'Get 10 cards right in a row',
+      icon: <Award className="w-6 h-6 text-green-500" />,
+      progress: 0,
+      target: 10,
+      unlocked: false
+    },
+    {
+      id: 'time_manager',
+      title: 'Time Manager',
+      description: 'Complete 5 focused study sessions with breaks',
+      icon: <Clock className="w-6 h-6 text-indigo-500" />,
+      progress: 0,
+      target: 5,
       unlocked: false
     }
   ]);
