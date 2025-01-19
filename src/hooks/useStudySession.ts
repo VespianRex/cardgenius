@@ -8,6 +8,7 @@ import {
   trackLearningProgress 
 } from '../utils/learning/optimizationEngine';
 import { toast } from 'sonner';
+import { SRSCard } from '../utils/srsSystem';
 
 export const useStudySession = (flashcards: Array<{ front: string; back: string }>) => {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -23,7 +24,26 @@ export const useStudySession = (flashcards: Array<{ front: string; back: string 
       console.log('Loaded saved study progress:', savedData);
     }
 
-    const manager = new ReviewQueueManager(flashcards, {
+    // Transform flashcards into SRSCard format
+    const srsCards: SRSCard[] = flashcards.map((card, index) => ({
+      ...card,
+      cardId: index.toString(),
+      status: 'new',
+      lastReviewed: new Date(0), // Unix epoch as default
+      nextReview: new Date(0),
+      interval: 0,
+      easeFactor: 2.5,
+      consecutiveCorrect: 0,
+      performance: [],
+      tags: [],
+      metadata: {
+        totalReviews: 0,
+        correctReviews: 0,
+        averageResponse: 0,
+      }
+    }));
+
+    const manager = new ReviewQueueManager(srsCards, {
       mode: studyMode,
       maxCards: 20,
       includeNew: true,
@@ -83,7 +103,23 @@ export const useStudySession = (flashcards: Array<{ front: string; back: string 
     
     // Calculate optimized interval
     const optimizedInterval = optimizeReviewSchedule(
-      currentCard as any,
+      {
+        ...currentCard,
+        cardId: currentCardIndex.toString(),
+        status: 'review',
+        lastReviewed: new Date(),
+        nextReview: new Date(),
+        interval: 0,
+        easeFactor: 2.5,
+        consecutiveCorrect: 0,
+        performance: [],
+        tags: [],
+        metadata: {
+          totalReviews: 1,
+          correctReviews: difficulty === 'easy' ? 1 : 0,
+          averageResponse: 0,
+        }
+      },
       savedData.reviews,
       1
     );
@@ -118,7 +154,12 @@ export const useStudySession = (flashcards: Array<{ front: string; back: string 
       reviews: [...savedData.reviews, review]
     });
 
-    trackLearningProgress(currentCard as any, [...savedData.reviews, review]);
+    trackLearningProgress({
+      ...currentCard,
+      ...review,
+      status: 'review'
+    }, [...savedData.reviews, review]);
+    
     queueManager.markReviewed(currentCardIndex, confidence);
     handleNextCard();
   };
