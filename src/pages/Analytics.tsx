@@ -1,12 +1,13 @@
 import { Routes, Route } from "react-router-dom";
+import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard";
 
 const Analytics = () => {
   return (
     <Routes>
-      <Route path="/" element={<div className="p-8"><h1 className="text-2xl font-bold">Analytics Dashboard</h1></div>} />
-      <Route path="/overview" element={<div className="p-8"><h1 className="text-2xl font-bold">Analytics Overview</h1></div>} />
-      <Route path="/detailed" element={<div className="p-8"><h1 className="text-2xl font-bold">Detailed Statistics</h1></div>} />
-      <Route path="/export" element={<div className="p-8"><h1 className="text-2xl font-bold">Export Report</h1></div>} />
+      <Route path="/" element={<AnalyticsDashboard />} />
+      <Route path="/overview" element={<AnalyticsDashboard />} />
+      <Route path="/detailed" element={<div className="p-8">Detailed analytics coming soon</div>} />
+      <Route path="/export" element={<div className="p-8">Export analytics coming soon</div>} />
     </Routes>
   );
 };
