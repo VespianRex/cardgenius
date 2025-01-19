@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Bell, Moon, Sun, Clock, Brain } from "lucide-react";
+import { Bell, Moon, Sun, Clock, Brain, Trophy } from "lucide-react";
 import { toast } from "sonner";
 
 const Settings = () => {
