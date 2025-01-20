@@ -1,121 +1,70 @@
-import { Brain, Book, GraduationCap, ArrowLeft } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
-import { Button } from "@/components/ui/button";
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 
-interface MainNavigationProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-}
-
-export const MainNavigation = ({ activeTab, onTabChange }: MainNavigationProps) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const handleNavigation = (path: string, tab: string) => {
-    onTabChange(tab);
-    navigate(path);
-  };
-
-  const goBack = () => {
-    if (location.pathname !== '/') {
-      navigate('/');
-    }
-  };
-
+export function MainNavigation() {
   return (
-    <div className="space-y-4">
-      {location.pathname !== '/' && (
-        <Button 
-          variant="ghost" 
-          onClick={goBack}
-          className="mb-4"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Home
-        </Button>
-      )}
-      
-      <Menubar className="mb-8 bg-card border-medical-accent/20">
-        <MenubarMenu>
-          <MenubarTrigger 
-            className={`gap-2 cursor-pointer ${activeTab === 'study' ? 'text-medical-primary' : ''}`}
-            onClick={() => handleNavigation('/study', 'study')}
-          >
-            <Brain className="w-4 h-4" />
-            Study
-          </MenubarTrigger>
-          <MenubarContent>
-            <MenubarItem onClick={() => handleNavigation('/study/new', 'study')}>
-              New Session
-              <MenubarShortcut>⌘N</MenubarShortcut>
-            </MenubarItem>
-            <MenubarItem onClick={() => handleNavigation('/study/review', 'study')}>
-              Review Due Cards
-            </MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem onClick={() => handleNavigation('/study/stats', 'study')}>
-              Statistics
-              <MenubarShortcut>⌘S</MenubarShortcut>
-            </MenubarItem>
-          </MenubarContent>
-        </MenubarMenu>
+    <NavigationMenu>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <Link to="/" className={navigationMenuTriggerStyle()}>
+            Home
+          </Link>
+        </NavigationMenuItem>
+        
+        <NavigationMenuItem>
+          <NavigationMenuTrigger>Study</NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
+              <li>
+                <NavigationMenuLink asChild>
+                  <Link
+                    to="/study"
+                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                  >
+                    <div className="text-sm font-medium leading-none">Study Session</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Start a new study session with your flashcards
+                    </p>
+                  </Link>
+                </NavigationMenuLink>
+              </li>
+              <li>
+                <NavigationMenuLink asChild>
+                  <Link
+                    to="/library"
+                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                  >
+                    <div className="text-sm font-medium leading-none">Library</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Manage your flashcard decks and collections
+                    </p>
+                  </Link>
+                </NavigationMenuLink>
+              </li>
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
 
-        <MenubarMenu>
-          <MenubarTrigger 
-            className={`gap-2 cursor-pointer ${activeTab === 'library' ? 'text-medical-primary' : ''}`}
-            onClick={() => handleNavigation('/library', 'library')}
-          >
-            <Book className="w-4 h-4" />
-            Library
-          </MenubarTrigger>
-          <MenubarContent>
-            <MenubarItem onClick={() => handleNavigation('/library/decks', 'library')}>
-              All Decks
-            </MenubarItem>
-            <MenubarItem onClick={() => handleNavigation('/library/categories', 'library')}>
-              Categories
-            </MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem onClick={() => handleNavigation('/library/import', 'library')}>
-              Import Deck
-            </MenubarItem>
-            <MenubarItem onClick={() => handleNavigation('/library/export', 'library')}>
-              Export Deck
-            </MenubarItem>
-          </MenubarContent>
-        </MenubarMenu>
-
-        <MenubarMenu>
-          <MenubarTrigger 
-            className={`gap-2 cursor-pointer ${activeTab === 'analytics' ? 'text-medical-primary' : ''}`}
-            onClick={() => handleNavigation('/analytics', 'analytics')}
-          >
-            <GraduationCap className="w-4 h-4" />
+        <NavigationMenuItem>
+          <Link to="/analytics" className={navigationMenuTriggerStyle()}>
             Analytics
-          </MenubarTrigger>
-          <MenubarContent>
-            <MenubarItem onClick={() => handleNavigation('/analytics/overview', 'analytics')}>
-              Overview
-            </MenubarItem>
-            <MenubarItem onClick={() => handleNavigation('/analytics/detailed', 'analytics')}>
-              Detailed Stats
-            </MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem onClick={() => handleNavigation('/analytics/export', 'analytics')}>
-              Export Report
-            </MenubarItem>
-          </MenubarContent>
-        </MenubarMenu>
-      </Menubar>
-    </div>
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <Link to="/profile" className={navigationMenuTriggerStyle()}>
+            Profile
+          </Link>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
-};
+}

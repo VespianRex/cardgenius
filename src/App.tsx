@@ -7,12 +7,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { MainLayout } from "./components/layout/MainLayout";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
-import Settings from "./pages/Settings";
-import Help from "./pages/Help";
-import NotFound from "./pages/NotFound";
 import Study from "./pages/Study";
+import Help from "./pages/Help";
+import Settings from "./pages/Settings";
 import Library from "./pages/Library";
 import Analytics from "./pages/Analytics";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -25,11 +25,11 @@ function App() {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/study/*" element={<Study />} />
-              <Route path="/library/*" element={<Library />} />
-              <Route path="/analytics/*" element={<Analytics />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/settings" element={<Settings />} />
               <Route path="/help" element={<Help />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/library" element={<Library />} />
+              <Route path="/analytics" element={<Analytics />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </MainLayout>
