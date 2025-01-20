@@ -8,6 +8,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { Brain, Book, BarChart, User, Settings, HelpCircle } from "lucide-react";
 
 export function MainNavigation() {
   return (
@@ -62,6 +63,18 @@ export function MainNavigation() {
         <NavigationMenuItem>
           <Link to="/profile" className={navigationMenuTriggerStyle()}>
             Profile
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <Link to="/settings" className={navigationMenuTriggerStyle()}>
+            Settings
+          </Link>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <Link to="/help" className={navigationMenuTriggerStyle()}>
+            Help
           </Link>
         </NavigationMenuItem>
       </NavigationMenuList>
