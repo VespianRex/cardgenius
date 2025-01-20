@@ -12,31 +12,35 @@ import NotFound from "./pages/NotFound";
 import Study from "./pages/Study";
 import Library from "./pages/Library";
 import Analytics from "./pages/Analytics";
+import { useState } from "react";
 
-const queryClient = new QueryClient();
+const App = () => {
+  // Move queryClient inside component to ensure proper React context
+  const [queryClient] = useState(() => new QueryClient());
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <div className="relative min-h-screen">
-        <Meteors number={20} />
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/study/*" element={<Study />} />
-            <Route path="/library/*" element={<Library />} />
-            <Route path="/analytics/*" element={<Analytics />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/help" element={<Help />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </div>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <div className="relative min-h-screen">
+          <Meteors number={20} />
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/study/*" element={<Study />} />
+              <Route path="/library/*" element={<Library />} />
+              <Route path="/analytics/*" element={<Analytics />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/help" element={<Help />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </div>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
