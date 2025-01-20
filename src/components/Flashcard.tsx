@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Rotate3D, ArrowLeftRight } from 'lucide-react';
-import { toast } from 'sonner';
 import { GooeyText } from '@/components/ui/gooey-text-morphing';
 
 interface FlashcardProps {
@@ -48,11 +47,10 @@ export const Flashcard = ({ front, back, onFlip }: FlashcardProps) => {
       <Card
         className={`relative p-8 cursor-pointer transition-all duration-500 transform 
           ${isFlipped ? 'rotate-y-180' : ''} 
-          min-h-[250px] group border border-medical-accent/20
+          min-h-[300px] group border border-medical-accent/20
           hover:border-medical-accent/40 hover:shadow-lg
           bg-gradient-to-br from-white to-medical-accent/5
-          dark:from-gray-900 dark:to-medical-primary/10
-          animate-scale-in`}
+          dark:from-gray-900 dark:to-medical-primary/10`}
         onClick={handleFlip}
         role="button"
         aria-label={`Flashcard. ${isFlipped ? 'Click to see front' : 'Click to see back'}`}
@@ -61,10 +59,11 @@ export const Flashcard = ({ front, back, onFlip }: FlashcardProps) => {
           className={`absolute inset-0 flex flex-col items-center justify-center p-8 backface-hidden
             transition-opacity duration-500 ${isFlipped ? 'opacity-0' : 'opacity-100'}`}
         >
-          <GooeyText
-            texts={[front]}
-            className="text-xl text-center text-card-foreground font-medium"
-          />
+          <div className="w-full max-h-[200px] overflow-y-auto text-center">
+            <p className="text-lg text-card-foreground font-medium break-words">
+              {front}
+            </p>
+          </div>
           <div className={`absolute bottom-4 left-0 right-0 flex items-center justify-center gap-2 
             text-sm text-medical-primary/60 transition-opacity duration-300
             ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
@@ -78,10 +77,12 @@ export const Flashcard = ({ front, back, onFlip }: FlashcardProps) => {
             rotate-y-180 transition-opacity duration-500 
             ${isFlipped ? 'opacity-100' : 'opacity-0'}`}
         >
-          <GooeyText
-            texts={[back]}
-            className="text-xl text-center text-card-foreground"
-          />
+          <div className="w-full max-h-[200px] overflow-y-auto text-center">
+            <GooeyText
+              texts={[back]}
+              className="text-lg text-card-foreground"
+            />
+          </div>
           <div className={`absolute bottom-4 left-0 right-0 flex items-center justify-center gap-2 
             text-sm text-medical-primary/60 transition-opacity duration-300
             ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
