@@ -1,9 +1,9 @@
+import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
 import { MainLayout } from "./components/layout/MainLayout";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
@@ -14,7 +14,7 @@ import Study from "./pages/Study";
 import Library from "./pages/Library";
 import Analytics from "./pages/Analytics";
 
-const App = () => {
+function App() {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
@@ -39,6 +39,6 @@ const App = () => {
       </TooltipProvider>
     </QueryClientProvider>
   );
-};
+}
 
 export default App;
