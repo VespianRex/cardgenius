@@ -3,7 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Meteors } from "@/components/ui/meteors";
+import { useState } from "react";
+import { MainLayout } from "./components/layout/MainLayout";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
@@ -12,20 +13,15 @@ import NotFound from "./pages/NotFound";
 import Study from "./pages/Study";
 import Library from "./pages/Library";
 import Analytics from "./pages/Analytics";
-import { useState } from "react";
 
 const App = () => {
-  // Move queryClient inside component to ensure proper React context
   const [queryClient] = useState(() => new QueryClient());
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <div className="relative min-h-screen">
-          <Meteors number={20} />
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
+        <BrowserRouter>
+          <MainLayout>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/study/*" element={<Study />} />
@@ -36,8 +32,10 @@ const App = () => {
               <Route path="/help" element={<Help />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </BrowserRouter>
-        </div>
+          </MainLayout>
+          <Toaster />
+          <Sonner />
+        </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
   );

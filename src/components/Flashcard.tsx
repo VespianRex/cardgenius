@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Rotate3D, ArrowLeftRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { GooeyText } from '@/components/ui/gooey-text-morphing';
 
 interface FlashcardProps {
   front: string;
@@ -18,7 +19,6 @@ export const Flashcard = ({ front, back, onFlip }: FlashcardProps) => {
     const newFlipped = !isFlipped;
     setIsFlipped(newFlipped);
     onFlip?.(newFlipped);
-    // Haptic feedback if available
     if ('vibrate' in navigator) {
       navigator.vibrate(50);
     }
@@ -32,7 +32,7 @@ export const Flashcard = ({ front, back, onFlip }: FlashcardProps) => {
     const touchEnd = e.changedTouches[0].clientX;
     const distance = touchStart - touchEnd;
 
-    if (Math.abs(distance) > 50) { // Minimum swipe distance
+    if (Math.abs(distance) > 50) {
       handleFlip();
     }
   };
@@ -61,9 +61,10 @@ export const Flashcard = ({ front, back, onFlip }: FlashcardProps) => {
           className={`absolute inset-0 flex flex-col items-center justify-center p-8 backface-hidden
             transition-opacity duration-500 ${isFlipped ? 'opacity-0' : 'opacity-100'}`}
         >
-          <div className="text-xl text-center text-card-foreground font-medium">
-            {front}
-          </div>
+          <GooeyText
+            texts={[front]}
+            className="text-xl text-center text-card-foreground font-medium"
+          />
           <div className={`absolute bottom-4 left-0 right-0 flex items-center justify-center gap-2 
             text-sm text-medical-primary/60 transition-opacity duration-300
             ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
@@ -77,9 +78,10 @@ export const Flashcard = ({ front, back, onFlip }: FlashcardProps) => {
             rotate-y-180 transition-opacity duration-500 
             ${isFlipped ? 'opacity-100' : 'opacity-0'}`}
         >
-          <div className="text-xl text-center text-card-foreground">
-            {back}
-          </div>
+          <GooeyText
+            texts={[back]}
+            className="text-xl text-center text-card-foreground"
+          />
           <div className={`absolute bottom-4 left-0 right-0 flex items-center justify-center gap-2 
             text-sm text-medical-primary/60 transition-opacity duration-300
             ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
