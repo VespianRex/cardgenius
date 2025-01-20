@@ -4,6 +4,9 @@ import { StudyModeSelector } from "@/components/StudyModeSelector";
 import { FlashcardSection } from "@/components/FlashcardSection";
 import { StudyProgress } from "@/components/StudyProgress";
 import { StudyTimer } from "@/components/StudyTimer";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Brain, Clock, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
 const StudyDashboard = () => {
@@ -47,7 +50,9 @@ const StudyDashboard = () => {
 const NewSession = () => (
   <div className="max-w-5xl mx-auto p-6">
     <h1 className="text-2xl font-bold mb-6">New Study Session</h1>
-    <StudyModeSelector onSelectMode={(mode) => toast.success(`Started ${mode} mode`)} />
+    <StudyModeSelector onSelectMode={(mode) => {
+      toast.success(`Started ${mode} mode`);
+    }} />
   </div>
 );
 
@@ -62,8 +67,25 @@ const ReviewDue = () => (
 );
 
 const StudyStats = () => (
-  <div className="max-w-5xl mx-auto p-6">
+  <div className="max-w-5xl mx-auto p-6 space-y-6">
     <h1 className="text-2xl font-bold mb-6">Study Statistics</h1>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <Card className="p-4">
+        <Brain className="w-6 h-6 text-medical-primary mb-2" />
+        <h3 className="font-semibold">Total Cards Studied</h3>
+        <p className="text-2xl font-bold">247</p>
+      </Card>
+      <Card className="p-4">
+        <Clock className="w-6 h-6 text-medical-secondary mb-2" />
+        <h3 className="font-semibold">Study Time</h3>
+        <p className="text-2xl font-bold">12.5 hrs</p>
+      </Card>
+      <Card className="p-4">
+        <TrendingUp className="w-6 h-6 text-medical-accent mb-2" />
+        <h3 className="font-semibold">Success Rate</h3>
+        <p className="text-2xl font-bold">85%</p>
+      </Card>
+    </div>
     <StudyProgress 
       totalCards={50} 
       cardsReviewed={35} 
