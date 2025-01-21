@@ -1,60 +1,61 @@
-import { StudyModeSelector } from "../StudyModeSelector";
-import { StudyProgress } from "../StudyProgress";
-import { StudyTimer } from "../StudyTimer";
-import { Progress } from "../ui/progress";
+import { Button } from "@/components/ui/button";
+import { Brain, Clock, Settings } from "lucide-react";
 
 interface StudyHeaderProps {
-  currentCardIndex: number;
-  totalCards: number;
-  startTime: Date;
-  ratings: {
-    easy: number;
-    medium: number;
-    hard: number;
-  };
-  streak: number;
-  onStudyModeChange: (mode: 'regular' | 'cram' | 'review' | 'scheduled') => void;
-  onExportAnalytics: () => void;
+  title: string;
+  subtitle?: string;
+  onSettingsClick?: () => void;
+  studyTime?: string;
+  cardsRemaining?: number;
 }
 
 export const StudyHeader = ({
-  currentCardIndex,
-  totalCards,
-  startTime,
-  ratings,
-  streak,
-  onStudyModeChange,
-  onExportAnalytics
+  title,
+  subtitle,
+  onSettingsClick,
+  studyTime,
+  cardsRemaining,
 }: StudyHeaderProps) => {
   return (
-    <div className="space-y-6 mb-8">
-      <div className="flex justify-between items-center">
-        <StudyModeSelector onSelectMode={onStudyModeChange} />
-        <button
-          onClick={onExportAnalytics}
-          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Export Analytics
-        </button>
-      </div>
-      
-      <StudyProgress 
-        cardsReviewed={ratings.easy + ratings.medium + ratings.hard}
-        totalCards={totalCards}
-        startTime={startTime}
-        ratings={ratings}
-        streak={streak}
-      />
-
+    <div className="flex flex-col gap-4 p-6 bg-card rounded-lg shadow-sm">
       <div className="flex items-center justify-between">
-        <Progress 
-          value={((currentCardIndex + 1) / totalCards) * 100} 
-          className="h-2 flex-1 mr-4"
-        />
-        <StudyTimer 
-          onBreakStart={() => {}}
-          onBreakEnd={() => {}}
-        />
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <Brain className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold">{title}</h1>
+            {subtitle && (
+              <p className="text-sm text-muted-foreground">{subtitle}</p>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4">
+          {studyTime && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Clock className="w-4 h-4" />
+              <span>{studyTime}</span>
+            </div>
+          )}
+          
+          {cardsRemaining !== undefined && (
+            <div className="text-sm text-muted-foreground">
+              {cardsRemaining} cards remaining
+            </div>
+          )}
+
+          {onSettingsClick && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={onSettingsClick}
+              className="hover:bg-accent"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,73 +1,52 @@
-import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Target, Trophy, Calendar } from 'lucide-react';
-import { toast } from 'sonner';
+import { Progress } from "@/components/ui/progress";
+import { Target, Trophy, Clock } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
-interface StudyGoal {
-  type: 'daily' | 'weekly' | 'monthly';
-  target: number;
-  current: number;
+interface StudyGoalsProps {
+  dailyGoal: number;
+  currentProgress: number;
+  streakDays: number;
+  studyTime: number;
 }
 
-export const StudyGoals = () => {
-  const [goals, setGoals] = useState<StudyGoal[]>([
-    { type: 'daily', target: 50, current: 0 },
-    { type: 'weekly', target: 200, current: 0 },
-    { type: 'monthly', target: 1000, current: 0 }
-  ]);
-
-  useEffect(() => {
-    const savedGoals = localStorage.getItem('studyGoals');
-    if (savedGoals) {
-      setGoals(JSON.parse(savedGoals));
-    }
-  }, []);
-
-  const updateProgress = (type: 'daily' | 'weekly' | 'monthly', amount: number) => {
-    setGoals(prev => {
-      const updated = prev.map(goal => {
-        if (goal.type === type) {
-          const newCurrent = Math.min(goal.current + amount, goal.target);
-          if (newCurrent === goal.target) {
-            toast.success(`🎉 Congratulations! You've reached your ${type} study goal!`);
-          }
-          return { ...goal, current: newCurrent };
-        }
-        return goal;
-      });
-      localStorage.setItem('studyGoals', JSON.stringify(updated));
-      return updated;
-    });
-  };
-
-  const getIcon = (type: string) => {
-    switch (type) {
-      case 'daily':
-        return <Target className="w-5 h-5 text-blue-500" />;
-      case 'weekly':
-        return <Calendar className="w-5 h-5 text-purple-500" />;
-      case 'monthly':
-        return <Trophy className="w-5 h-5 text-yellow-500" />;
-      default:
-        return null;
-    }
-  };
+export const StudyGoals = ({
+  dailyGoal,
+  currentProgress,
+  streakDays,
+  studyTime,
+}: StudyGoalsProps) => {
+  const progressPercentage = (currentProgress / dailyGoal) * 100;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {goals.map((goal) => (
-        <Card key={goal.type} className="p-4">
-          <div className="flex items-center gap-2 mb-2">
-            {getIcon(goal.type)}
-            <h3 className="font-semibold capitalize">{goal.type} Goal</h3>
-          </div>
-          <Progress value={(goal.current / goal.target) * 100} className="h-2 mb-2" />
-          <p className="text-sm text-muted-foreground">
-            {goal.current} / {goal.target} cards
-          </p>
-        </Card>
-      ))}
+      <Card className="p-4 space-y-2">
+        <div className="flex items-center gap-2">
+          <Target className="w-5 h-5 text-primary" />
+          <h3 className="font-semibold">Daily Goal</h3>
+        </div>
+        <Progress value={progressPercentage} className="h-2" />
+        <p className="text-sm text-muted-foreground">
+          {currentProgress} / {dailyGoal} cards
+        </p>
+      </Card>
+
+      <Card className="p-4 space-y-2">
+        <div className="flex items-center gap-2">
+          <Trophy className="w-5 h-5 text-primary" />
+          <h3 className="font-semibold">Study Streak</h3>
+        </div>
+        <p className="text-2xl font-bold">{streakDays}</p>
+        <p className="text-sm text-muted-foreground">days in a row</p>
+      </Card>
+
+      <Card className="p-4 space-y-2">
+        <div className="flex items-center gap-2">
+          <Clock className="w-5 h-5 text-primary" />
+          <h3 className="font-semibold">Study Time</h3>
+        </div>
+        <p className="text-2xl font-bold">{Math.floor(studyTime / 60)}:{(studyTime % 60).toString().padStart(2, '0')}</p>
+        <p className="text-sm text-muted-foreground">total time today</p>
+      </Card>
     </div>
   );
 };

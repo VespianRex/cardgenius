@@ -1,59 +1,89 @@
-import { Button } from "../ui/button";
-import { DifficultyRating } from "../DifficultyRating";
-import { NavigationControls } from "../NavigationControls";
-import { KeyboardShortcuts } from "../KeyboardShortcuts";
-import { Keyboard } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  RotateCcw, 
+  Settings, 
+  Pause,
+  Play 
+} from "lucide-react";
+import { toast } from "sonner";
 
 interface StudyControlsProps {
-  currentCardIndex: number;
-  totalCards: number;
-  showRating: boolean;
-  showKeyboardShortcuts: boolean;
-  onPrevious: () => void;
   onNext: () => void;
-  onDifficultyRate: (difficulty: 'easy' | 'medium' | 'hard', confidence: number) => void;
-  onToggleKeyboardShortcuts: () => void;
+  onPrevious: () => void;
+  onReset: () => void;
+  isPaused?: boolean;
+  onPauseToggle?: () => void;
+  showPauseButton?: boolean;
 }
 
 export const StudyControls = ({
-  currentCardIndex,
-  totalCards,
-  showRating,
-  showKeyboardShortcuts,
-  onPrevious,
   onNext,
-  onDifficultyRate,
-  onToggleKeyboardShortcuts
+  onPrevious,
+  onReset,
+  isPaused = false,
+  onPauseToggle,
+  showPauseButton = false,
 }: StudyControlsProps) => {
+  const handleReset = () => {
+    onReset();
+    toast.info("Study session reset");
+  };
+
   return (
-    <div className="space-y-6">
-      <DifficultyRating 
-        onRate={onDifficultyRate}
-        visible={showRating}
-      />
-
-      <NavigationControls 
-        currentCardIndex={currentCardIndex}
-        totalCards={totalCards}
-        onPrevious={onPrevious}
-        onNext={onNext}
-        onToggleKeyboardShortcuts={onToggleKeyboardShortcuts}
-      />
-
-      <KeyboardShortcuts 
-        isVisible={showKeyboardShortcuts}
-        onToggle={onToggleKeyboardShortcuts}
-      />
-
-      <div className="text-center text-sm text-muted-foreground">
-        Card {currentCardIndex + 1} of {totalCards}
+    <div className="flex items-center justify-between gap-4 p-4 bg-card rounded-lg shadow-sm">
+      <div className="flex items-center gap-2">
         <Button
-          variant="ghost"
-          size="sm"
-          className="ml-2 text-medical-primary/60 hover:text-medical-primary"
-          onClick={onToggleKeyboardShortcuts}
+          variant="outline"
+          size="icon"
+          onClick={onPrevious}
+          className="hover:bg-accent"
         >
-          <Keyboard className="w-4 h-4" />
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={onNext}
+          className="hover:bg-accent"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <div className="flex items-center gap-2">
+        {showPauseButton && onPauseToggle && (
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={onPauseToggle}
+            className="hover:bg-accent"
+          >
+            {isPaused ? (
+              <Play className="h-4 w-4" />
+            ) : (
+              <Pause className="h-4 w-4" />
+            )}
+          </Button>
+        )}
+
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleReset}
+          className="hover:bg-accent"
+        >
+          <RotateCcw className="h-4 w-4" />
+        </Button>
+
+        <Button
+          variant="outline"
+          size="icon"
+          className="hover:bg-accent"
+        >
+          <Settings className="h-4 w-4" />
         </Button>
       </div>
     </div>
