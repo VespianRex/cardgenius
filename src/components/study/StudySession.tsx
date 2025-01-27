@@ -35,6 +35,7 @@ export const StudySession = ({ flashcards }: StudySessionProps) => {
   } = useStudyAnalytics();
 
   const [isPreloading, setIsPreloading] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     const preloadImages = async () => {
@@ -75,7 +76,6 @@ export const StudySession = ({ flashcards }: StudySessionProps) => {
     const studyDuration = Math.floor((new Date().getTime() - startTime.getTime()) / 1000);
     trackStudyHabit(studyDuration, ratings.easy + ratings.medium + ratings.hard);
     
-    // Suggest memory technique every 5 cards
     if (currentCardIndex > 0 && currentCardIndex % 5 === 0) {
       const currentCard = flashcards[currentCardIndex];
       const technique = suggestMemoryTechnique(currentCard.front);
@@ -94,19 +94,25 @@ export const StudySession = ({ flashcards }: StudySessionProps) => {
     return <div>Loading cards...</div>;
   }
 
+  // Calculate study time in minutes
+  const studyTimeInMinutes = Math.floor((new Date().getTime() - startTime.getTime()) / (1000 * 60));
+
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
       <StudyHeader 
-        currentCardIndex={currentCardIndex}
-        totalCards={flashcards.length}
-        startTime={startTime}
-        ratings={ratings}
-        streak={streak}
-        onStudyModeChange={setStudyMode}
-        onExportAnalytics={exportAnalytics}
+        title="Study Session"
+        subtitle={`Reviewing ${flashcards.length} cards`}
+        onSettingsClick={() => {}}
+        studyTime={`${Math.floor(studyTimeInMinutes / 60)}h ${studyTimeInMinutes % 60}m`}
+        cardsRemaining={queueManager?.getRemainingCount() ?? flashcards.length}
       />
 
-      <StudyGoals />
+      <StudyGoals 
+        dailyGoal={20}
+        currentProgress={currentCardIndex}
+        streakDays={streak}
+        studyTime={studyTimeInMinutes}
+      />
       
       <FlashcardDisplay
         card={flashcards[currentCardIndex]}
@@ -115,14 +121,12 @@ export const StudySession = ({ flashcards }: StudySessionProps) => {
       />
       
       <StudyControls 
-        currentCardIndex={currentCardIndex}
-        totalCards={queueManager?.getRemainingCount() ?? flashcards.length}
-        showRating={showRating}
-        showKeyboardShortcuts={false}
-        onPrevious={handlePrevCard}
         onNext={handleNextCard}
-        onDifficultyRate={handleDifficultyRating}
-        onToggleKeyboardShortcuts={() => {}}
+        onPrevious={handlePrevCard}
+        onReset={() => {}}
+        isPaused={isPaused}
+        onPauseToggle={() => setIsPaused(!isPaused)}
+        showPauseButton={true}
       />
     </div>
   );
