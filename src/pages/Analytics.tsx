@@ -1,112 +1,63 @@
-import { Routes, Route } from "react-router-dom";
-import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Download, TrendingUp, Brain, Clock, Target } from "lucide-react";
-import { toast } from "sonner";
-import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
-import { Meteors } from "@/components/ui/meteors";
-import { AnimatedCircularProgressBar } from "@/components/ui/animated-circular-progress-bar";
-
-const features = [
-  {
-    Icon: Brain,
-    name: "Study Progress",
-    description: "Track your learning journey with detailed analytics.",
-    href: "/analytics/detailed",
-    cta: "View Progress",
-    className: "lg:col-span-2",
-  },
-  {
-    Icon: Clock,
-    name: "Study Time",
-    description: "Monitor your study duration and patterns.",
-    href: "/analytics/detailed",
-    cta: "View Time",
-    className: "lg:col-span-1",
-  },
-  {
-    Icon: Target,
-    name: "Goals",
-    description: "Set and track your study goals.",
-    href: "/analytics/detailed",
-    cta: "View Goals",
-    className: "lg:col-span-1",
-  },
-];
-
-const DetailedAnalytics = () => {
-  return (
-    <div className="p-8 space-y-6 relative">
-      <Meteors number={20} />
-      <h2 className="text-2xl font-bold">Detailed Analytics</h2>
-      <BentoGrid className="lg:grid-cols-2">
-        {features.map((feature) => (
-          <BentoCard key={feature.name} {...feature} background={null} />
-        ))}
-      </BentoGrid>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <Card className="p-6 relative overflow-hidden">
-          <h3 className="text-lg font-semibold mb-4">Learning Progress</h3>
-          <AnimatedCircularProgressBar
-            max={100}
-            min={0}
-            value={75}
-            gaugePrimaryColor="rgb(44, 82, 130)"
-            gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
-          />
-          <Meteors number={10} />
-        </Card>
-        
-        <Card className="p-6 relative overflow-hidden">
-          <h3 className="text-lg font-semibold mb-4">Performance Metrics</h3>
-          <AnimatedCircularProgressBar
-            max={100}
-            min={0}
-            value={88}
-            gaugePrimaryColor="rgb(66, 153, 225)"
-            gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
-          />
-          <Meteors number={10} />
-        </Card>
-      </div>
-    </div>
-  );
-};
-
-const ExportAnalytics = () => {
-  const handleExport = () => {
-    toast.success("Analytics report exported successfully!");
-  };
-
-  return (
-    <div className="p-8 space-y-6">
-      <h2 className="text-2xl font-bold">Export Analytics</h2>
-      <Card className="p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Generate Report</h3>
-            <p className="text-muted-foreground">Export your study analytics in various formats.</p>
-          </div>
-          <Button onClick={handleExport}>
-            <Download className="w-4 h-4 mr-2" />
-            Export Report
-          </Button>
-        </div>
-      </Card>
-    </div>
-  );
-};
+import { Progress } from "@/components/ui/progress";
+import { Brain, Clock, Trophy, Target } from "lucide-react";
+import { StudyTimeChart } from "@/components/analytics/StudyTimeChart";
+import { SuccessRateChart } from "@/components/analytics/SuccessRateChart";
+import { LearningPatterns } from "@/components/analytics/LearningPatterns";
 
 const Analytics = () => {
   return (
-    <Routes>
-      <Route path="/" element={<AnalyticsDashboard />} />
-      <Route path="/overview" element={<AnalyticsDashboard />} />
-      <Route path="/detailed" element={<DetailedAnalytics />} />
-      <Route path="/export" element={<ExportAnalytics />} />
-    </Routes>
+    <div className="space-y-8 animate-fade-in">
+      <div className="space-y-4">
+        <h1 className="text-3xl font-bold">Analytics Dashboard</h1>
+        <p className="text-muted-foreground">
+          Track your study progress and learning patterns
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-medical-primary/10 rounded-lg">
+              <Brain className="w-5 h-5 text-medical-primary" />
+            </div>
+            <h3 className="font-semibold">Cards Mastered</h3>
+          </div>
+          <Progress value={75} className="h-2 mb-2" />
+          <p className="text-2xl font-bold">75%</p>
+          <p className="text-sm text-muted-foreground">150 of 200 cards</p>
+        </Card>
+
+        <Card className="p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-medical-secondary/10 rounded-lg">
+              <Clock className="w-5 h-5 text-medical-secondary" />
+            </div>
+            <h3 className="font-semibold">Study Time</h3>
+          </div>
+          <p className="text-2xl font-bold">12.5h</p>
+          <p className="text-sm text-muted-foreground">This week</p>
+        </Card>
+
+        <Card className="p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-medical-accent/10 rounded-lg">
+              <Trophy className="w-5 h-5 text-medical-accent" />
+            </div>
+            <h3 className="font-semibold">Current Streak</h3>
+          </div>
+          <p className="text-2xl font-bold">7 days</p>
+          <p className="text-sm text-muted-foreground">Personal best: 14 days</p>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <StudyTimeChart />
+        <SuccessRateChart />
+      </div>
+
+      <LearningPatterns />
+    </div>
   );
 };
 

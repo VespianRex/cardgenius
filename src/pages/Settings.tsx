@@ -1,9 +1,9 @@
+import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { Bell, Moon, Sun, Clock, Brain, Trophy } from "lucide-react";
+import { Select } from "@/components/ui/select";
+import { Volume2, Bell, Moon, Keyboard, Brain, Download } from "lucide-react";
 import { toast } from "sonner";
-import { Card } from "@/components/ui/card";
 
 const Settings = () => {
   const handleSave = () => {
@@ -11,72 +11,107 @@ const Settings = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-8">
-      <h1 className="text-2xl font-bold">Settings</h1>
+    <div className="space-y-8 animate-fade-in">
+      <div className="space-y-4">
+        <h1 className="text-3xl font-bold">Settings</h1>
+        <p className="text-muted-foreground">
+          Customize your study experience
+        </p>
+      </div>
 
-      <Card className="p-6 space-y-6">
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Study Preferences</h2>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Brain className="w-4 h-4" />
-              <span>Daily study goal</span>
+      <div className="space-y-6">
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Study Preferences</h2>
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Brain className="w-4 h-4 text-medical-primary" />
+                  <label className="text-sm font-medium">Spaced Repetition</label>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Optimize review intervals based on your performance
+                </p>
+              </div>
+              <Switch defaultChecked />
             </div>
-            <Slider defaultValue={[30]} max={120} step={5} className="w-[200px]" />
-          </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              <span>Break reminder interval</span>
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Keyboard className="w-4 h-4 text-medical-primary" />
+                  <label className="text-sm font-medium">Keyboard Shortcuts</label>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Enable keyboard navigation and controls
+                </p>
+              </div>
+              <Switch defaultChecked />
             </div>
-            <Slider defaultValue={[25]} max={60} step={5} className="w-[200px]" />
-          </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Trophy className="w-4 h-4" />
-              <span>Show achievements</span>
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Moon className="w-4 h-4 text-medical-primary" />
+                  <label className="text-sm font-medium">Dark Mode</label>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Switch between light and dark themes
+                </p>
+              </div>
+              <Switch />
             </div>
-            <Switch defaultChecked />
           </div>
+        </Card>
+
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Notifications</h2>
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Bell className="w-4 h-4 text-medical-secondary" />
+                  <label className="text-sm font-medium">Study Reminders</label>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Get notifications for scheduled study sessions
+                </p>
+              </div>
+              <Switch defaultChecked />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Volume2 className="w-4 h-4 text-medical-secondary" />
+                  <label className="text-sm font-medium">Sound Effects</label>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Play sounds for card flips and actions
+                </p>
+              </div>
+              <Switch defaultChecked />
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Data Management</h2>
+          <div className="space-y-4">
+            <Button variant="outline" className="w-full justify-start">
+              <Download className="w-4 h-4 mr-2" />
+              Export Study Data
+            </Button>
+            <Button variant="destructive" className="w-full justify-start">
+              Reset Progress
+            </Button>
+          </div>
+        </Card>
+
+        <div className="flex justify-end">
+          <Button onClick={handleSave}>Save Changes</Button>
         </div>
-
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Notifications</h2>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Bell className="w-4 h-4" />
-              <span>Study reminders</span>
-            </div>
-            <Switch defaultChecked />
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Display</h2>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sun className="w-4 h-4" />
-              <span>Light mode</span>
-            </div>
-            <Switch defaultChecked />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Moon className="w-4 h-4" />
-              <span>Dark mode</span>
-            </div>
-            <Switch />
-          </div>
-        </div>
-
-        <Button onClick={handleSave} className="w-full">Save Settings</Button>
-      </Card>
+      </div>
     </div>
   );
 };
