@@ -3,7 +3,6 @@ import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
@@ -15,7 +14,7 @@ export function MainNavigation() {
   const isMobile = useIsMobile();
 
   return (
-    <NavigationMenu className="max-w-full w-full justify-start">
+    <NavigationMenu className="max-w-full w-full justify-start relative z-50">
       <NavigationMenuList className={`${isMobile ? 'flex-col space-y-2' : 'flex-row'}`}>
         <NavigationMenuItem>
           <Link to="/" className={navigationMenuTriggerStyle()}>
@@ -23,7 +22,7 @@ export function MainNavigation() {
           </Link>
         </NavigationMenuItem>
         
-        <NavigationMenuItem>
+        <NavigationMenuItem className="relative">
           <NavigationMenuTrigger className="cursor-pointer">Study</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[300px] gap-3 p-4 bg-popover shadow-lg rounded-lg border border-border">
