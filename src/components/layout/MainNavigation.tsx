@@ -21,9 +21,9 @@ export function MainNavigation() {
         </NavigationMenuItem>
         
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Study</NavigationMenuTrigger>
+          <NavigationMenuTrigger className="cursor-pointer">Study</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
+            <ul className="grid w-[400px] gap-3 p-4 bg-popover shadow-lg rounded-lg">
               <li>
                 <NavigationMenuLink asChild>
                   <Link
@@ -46,6 +46,19 @@ export function MainNavigation() {
                     <div className="text-sm font-medium leading-none">Library</div>
                     <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                       Manage your flashcard decks and collections
+                    </p>
+                  </Link>
+                </NavigationMenuLink>
+              </li>
+              <li>
+                <NavigationMenuLink asChild>
+                  <Link
+                    to="/analytics"
+                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                  >
+                    <div className="text-sm font-medium leading-none">Analytics</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      View your study statistics and progress
                     </p>
                   </Link>
                 </NavigationMenuLink>

@@ -7,9 +7,19 @@ export const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
+  // Only show the toggle after mounting to prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    // Apply the theme to the document element
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+    if (theme) {
+      root.classList.add(theme);
+    }
+  }, [theme]);
 
   if (!mounted) return null;
 
@@ -17,8 +27,12 @@ export const ThemeToggle = () => {
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      className="fixed top-4 right-4 rounded-full hover:bg-white/10 transition-colors"
+      onClick={() => {
+        const newTheme = theme === "light" ? "dark" : "light";
+        setTheme(newTheme);
+        console.log('Theme changed to:', newTheme);
+      }}
+      className="fixed top-4 right-4 rounded-full hover:bg-accent transition-colors"
       title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
     >
       {theme === "light" ? (

@@ -1,11 +1,13 @@
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
 import { Volume2, Bell, Moon, Keyboard, Brain, Download } from "lucide-react";
 import { toast } from "sonner";
+import { useTheme } from "next-themes";
 
 const Settings = () => {
+  const { theme, setTheme } = useTheme();
+
   const handleSave = () => {
     toast.success("Settings saved successfully!");
   };
@@ -59,7 +61,13 @@ const Settings = () => {
                   Switch between light and dark themes
                 </p>
               </div>
-              <Switch />
+              <Switch 
+                checked={theme === 'dark'}
+                onCheckedChange={(checked) => {
+                  setTheme(checked ? 'dark' : 'light');
+                  toast.success(`${checked ? 'Dark' : 'Light'} mode enabled`);
+                }}
+              />
             </div>
           </div>
         </Card>
