@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { Search, Plus, BookOpen, Brain, Star } from "lucide-react";
 import { SearchFilters } from "@/components/analytics/SearchFilters";
 import { SmartCardOrganizer } from "@/components/cards/SmartCardOrganizer";
