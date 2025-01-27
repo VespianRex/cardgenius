@@ -59,7 +59,7 @@ export const StudySession = ({ flashcards }: StudySessionProps) => {
           return new Promise((resolve) => {
             const img = new Image();
             img.onload = resolve;
-            img.onerror = resolve; // Continue even if some images fail
+            img.onerror = resolve;
             img.src = url;
           });
         })
@@ -94,8 +94,12 @@ export const StudySession = ({ flashcards }: StudySessionProps) => {
     return <div>Loading cards...</div>;
   }
 
-  // Calculate study time in minutes
   const studyTimeInMinutes = Math.floor((new Date().getTime() - startTime.getTime()) / (1000 * 60));
+
+  const handleReset = () => {
+    queueManager?.reset();
+    toast.success("Study session reset");
+  };
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
@@ -123,7 +127,7 @@ export const StudySession = ({ flashcards }: StudySessionProps) => {
       <StudyControls 
         onNext={handleNextCard}
         onPrevious={handlePrevCard}
-        onReset={() => {}}
+        onReset={handleReset}
         isPaused={isPaused}
         onPauseToggle={() => setIsPaused(!isPaused)}
         showPauseButton={true}
