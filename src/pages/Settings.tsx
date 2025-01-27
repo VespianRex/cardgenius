@@ -4,16 +4,48 @@ import { Button } from "@/components/ui/button";
 import { Volume2, Bell, Moon, Keyboard, Brain, Download } from "lucide-react";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
+import { useState, useEffect } from "react";
 
 const Settings = () => {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [settings, setSettings] = useState({
+    spacedRepetition: true,
+    keyboardShortcuts: true,
+    studyReminders: true,
+    soundEffects: true
+  });
+
+  // Only show the settings after mounting to prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+    // Load saved settings from localStorage
+    const savedSettings = localStorage.getItem('studySettings');
+    if (savedSettings) {
+      setSettings(JSON.parse(savedSettings));
+    }
+  }, []);
+
+  const handleSettingChange = (setting: keyof typeof settings) => {
+    setSettings(prev => {
+      const newSettings = { ...prev, [setting]: !prev[setting] };
+      // Save to localStorage
+      localStorage.setItem('studySettings', JSON.stringify(newSettings));
+      // Show toast notification
+      toast.success(`${setting} ${newSettings[setting] ? 'enabled' : 'disabled'}`);
+      return newSettings;
+    });
+  };
 
   const handleSave = () => {
+    localStorage.setItem('studySettings', JSON.stringify(settings));
     toast.success("Settings saved successfully!");
   };
 
+  if (!mounted) return null;
+
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-8 animate-fade-in p-4 md:p-8">
       <div className="space-y-4">
         <h1 className="text-3xl font-bold">Settings</h1>
         <p className="text-muted-foreground">
@@ -35,7 +67,10 @@ const Settings = () => {
                   Optimize review intervals based on your performance
                 </p>
               </div>
-              <Switch defaultChecked />
+              <Switch 
+                checked={settings.spacedRepetition}
+                onCheckedChange={() => handleSettingChange('spacedRepetition')}
+              />
             </div>
 
             <div className="flex items-center justify-between">
@@ -48,7 +83,10 @@ const Settings = () => {
                   Enable keyboard navigation and controls
                 </p>
               </div>
-              <Switch defaultChecked />
+              <Switch 
+                checked={settings.keyboardShortcuts}
+                onCheckedChange={() => handleSettingChange('keyboardShortcuts')}
+              />
             </div>
 
             <div className="flex items-center justify-between">
@@ -85,7 +123,10 @@ const Settings = () => {
                   Get notifications for scheduled study sessions
                 </p>
               </div>
-              <Switch defaultChecked />
+              <Switch 
+                checked={settings.studyReminders}
+                onCheckedChange={() => handleSettingChange('studyReminders')}
+              />
             </div>
 
             <div className="flex items-center justify-between">
@@ -98,7 +139,10 @@ const Settings = () => {
                   Play sounds for card flips and actions
                 </p>
               </div>
-              <Switch defaultChecked />
+              <Switch 
+                checked={settings.soundEffects}
+                onCheckedChange={() => handleSettingChange('soundEffects')}
+              />
             </div>
           </div>
         </Card>
@@ -110,7 +154,20 @@ const Settings = () => {
               <Download className="w-4 h-4 mr-2" />
               Export Study Data
             </Button>
-            <Button variant="destructive" className="w-full justify-start">
+            <Button 
+              variant="destructive" 
+              className="w-full justify-start"
+              onClick={() => {
+                localStorage.clear();
+                toast.success("All data has been reset");
+                setSettings({
+                  spacedRepetition: true,
+                  keyboardShortcuts: true,
+                  studyReminders: true,
+                  soundEffects: true
+                });
+              }}
+            >
               Reset Progress
             </Button>
           </div>

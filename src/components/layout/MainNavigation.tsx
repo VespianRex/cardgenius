@@ -9,11 +9,14 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Brain, Book, BarChart, User, Settings, HelpCircle } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function MainNavigation() {
+  const isMobile = useIsMobile();
+
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
+    <NavigationMenu className="max-w-full w-full justify-start">
+      <NavigationMenuList className={`${isMobile ? 'flex-col space-y-2' : 'flex-row'}`}>
         <NavigationMenuItem>
           <Link to="/" className={navigationMenuTriggerStyle()}>
             Home
@@ -23,45 +26,39 @@ export function MainNavigation() {
         <NavigationMenuItem>
           <NavigationMenuTrigger className="cursor-pointer">Study</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 bg-popover shadow-lg rounded-lg">
+            <ul className="grid w-[300px] gap-3 p-4 bg-popover shadow-lg rounded-lg border border-border">
               <li>
-                <NavigationMenuLink asChild>
-                  <Link
-                    to="/study"
-                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                  >
-                    <div className="text-sm font-medium leading-none">Study Session</div>
-                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                      Start a new study session with your flashcards
-                    </p>
-                  </Link>
-                </NavigationMenuLink>
+                <Link
+                  to="/study"
+                  className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                >
+                  <div className="text-sm font-medium leading-none">Study Session</div>
+                  <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                    Start a new study session with your flashcards
+                  </p>
+                </Link>
               </li>
               <li>
-                <NavigationMenuLink asChild>
-                  <Link
-                    to="/library"
-                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                  >
-                    <div className="text-sm font-medium leading-none">Library</div>
-                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                      Manage your flashcard decks and collections
-                    </p>
-                  </Link>
-                </NavigationMenuLink>
+                <Link
+                  to="/library"
+                  className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                >
+                  <div className="text-sm font-medium leading-none">Library</div>
+                  <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                    Manage your flashcard decks and collections
+                  </p>
+                </Link>
               </li>
               <li>
-                <NavigationMenuLink asChild>
-                  <Link
-                    to="/analytics"
-                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                  >
-                    <div className="text-sm font-medium leading-none">Analytics</div>
-                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                      View your study statistics and progress
-                    </p>
-                  </Link>
-                </NavigationMenuLink>
+                <Link
+                  to="/analytics"
+                  className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                >
+                  <div className="text-sm font-medium leading-none">Analytics</div>
+                  <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                    View your study statistics and progress
+                  </p>
+                </Link>
               </li>
             </ul>
           </NavigationMenuContent>
