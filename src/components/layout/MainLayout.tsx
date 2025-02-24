@@ -8,13 +8,13 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
       <Meteors number={40} className="absolute inset-0 pointer-events-none" />
       
       <div>
-        <nav className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-          <div className="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2 sm:py-4">
+        <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
+          <div className="w-full max-w-7xl mx-auto px-4 py-3">
             <MainNavigation />
           </div>
-        </nav>
+        </header>
         
-        <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+        <main className="container mx-auto px-4 py-6">
           {children}
         </main>
       </div>
