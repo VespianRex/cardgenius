@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { StudyHeader } from "./StudyHeader";
 import { StudyControls } from "./StudyControls";
@@ -7,6 +8,9 @@ import { useStudySession } from "../../hooks/useStudySession";
 import { useStudyAnalytics } from "../../hooks/useStudyAnalytics";
 import { suggestMemoryTechnique, trackStudyHabit } from "../../utils/studyTechniques";
 import { toast } from "sonner";
+import { PerformanceIndicator } from "./PerformanceIndicator";
+import { optimizeReviewSchedule, getMaturityLevel } from "../../utils/srs/reviewScheduler";
+import { SRSCard } from "../../utils/srsSystem";
 
 interface StudySessionProps {
   flashcards: Array<{ front: string; back: string }>;
@@ -36,6 +40,7 @@ export const StudySession = ({ flashcards }: StudySessionProps) => {
 
   const [isPreloading, setIsPreloading] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
+  const [currentMaturity, setCurrentMaturity] = useState(0);
 
   useEffect(() => {
     const preloadImages = async () => {
@@ -66,11 +71,17 @@ export const StudySession = ({ flashcards }: StudySessionProps) => {
       );
 
       setIsPreloading(false);
-      console.log('Preloaded all card images');
     };
 
     preloadImages();
   }, [flashcards]);
+
+  useEffect(() => {
+    if (currentCardIndex >= 0 && currentCardIndex < flashcards.length) {
+      const card = flashcards[currentCardIndex] as SRSCard;
+      setCurrentMaturity(getMaturityLevel(card));
+    }
+  }, [currentCardIndex, flashcards]);
 
   useEffect(() => {
     const studyDuration = Math.floor((new Date().getTime() - startTime.getTime()) / 1000);
@@ -101,6 +112,9 @@ export const StudySession = ({ flashcards }: StudySessionProps) => {
     toast.success("Study session reset");
   };
 
+  const retention = ((ratings.easy * 3 + ratings.medium * 2) / 
+    (Math.max(1, (ratings.easy + ratings.medium + ratings.hard) * 3))) * 100;
+
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
       <StudyHeader 
@@ -116,6 +130,12 @@ export const StudySession = ({ flashcards }: StudySessionProps) => {
         currentProgress={currentCardIndex}
         streakDays={streak}
         studyTime={studyTimeInMinutes}
+      />
+
+      <PerformanceIndicator
+        correctStreak={streak}
+        retention={retention}
+        maturityLevel={currentMaturity}
       />
       
       <FlashcardDisplay
