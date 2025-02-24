@@ -8,7 +8,6 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Brain, Book, BarChart, User, Settings, HelpCircle } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export function MainNavigation() {
@@ -27,7 +26,7 @@ export function MainNavigation() {
           <NavigationMenuTrigger className="cursor-pointer">Study</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[300px] gap-3 p-4 bg-popover shadow-lg rounded-lg border border-border">
-              <li className="cursor-pointer">
+              <li>
                 <Link
                   to="/study"
                   className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
@@ -38,7 +37,7 @@ export function MainNavigation() {
                   </p>
                 </Link>
               </li>
-              <li className="cursor-pointer">
+              <li>
                 <Link
                   to="/library"
                   className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
@@ -46,17 +45,6 @@ export function MainNavigation() {
                   <div className="text-sm font-medium leading-none">Library</div>
                   <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                     Manage your flashcard decks and collections
-                  </p>
-                </Link>
-              </li>
-              <li className="cursor-pointer">
-                <Link
-                  to="/analytics"
-                  className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                >
-                  <div className="text-sm font-medium leading-none">Analytics</div>
-                  <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                    View your study statistics and progress
                   </p>
                 </Link>
               </li>
