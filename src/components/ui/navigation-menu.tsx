@@ -10,10 +10,10 @@ const NavigationMenu = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Root>
 >(({ className, children, ...props }, ref) => (
   <NavigationMenuPrimitive.Root
-    delayDuration={1500}
+    delayDuration={500}
     ref={ref}
     className={cn(
-      "relative z-[100] flex max-w-max flex-1 items-center justify-center",
+      "relative z-[9999] flex max-w-max flex-1 items-center justify-center",
       className
     )}
     {...props}

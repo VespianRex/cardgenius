@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import {
   NavigationMenu,
@@ -14,7 +15,7 @@ export function MainNavigation() {
   const isMobile = useIsMobile();
 
   return (
-    <NavigationMenu className="max-w-full w-full justify-start relative z-[100]">
+    <NavigationMenu className="max-w-full w-full justify-start">
       <NavigationMenuList className={`${isMobile ? 'flex-col space-y-2' : 'flex-row'}`}>
         <NavigationMenuItem>
           <Link to="/" className={navigationMenuTriggerStyle()}>
@@ -22,9 +23,9 @@ export function MainNavigation() {
           </Link>
         </NavigationMenuItem>
         
-        <NavigationMenuItem className="relative group">
-          <NavigationMenuTrigger className="cursor-pointer relative z-[100]">Study</NavigationMenuTrigger>
-          <NavigationMenuContent className="absolute z-[100] data-[motion=from-start]:animate-enter data-[motion=from-end]:animate-enter data-[motion=to-start]:animate-exit data-[motion=to-end]:animate-exit">
+        <NavigationMenuItem>
+          <NavigationMenuTrigger className="cursor-pointer">Study</NavigationMenuTrigger>
+          <NavigationMenuContent>
             <ul className="grid w-[300px] gap-3 p-4 bg-popover shadow-lg rounded-lg border border-border">
               <li className="cursor-pointer">
                 <Link
