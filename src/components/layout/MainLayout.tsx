@@ -9,12 +9,12 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
       
       <div>
         <nav className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2 sm:py-4">
             <MainNavigation />
           </div>
         </nav>
         
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
           {children}
         </main>
       </div>

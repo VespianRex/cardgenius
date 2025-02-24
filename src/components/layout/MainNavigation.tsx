@@ -15,17 +15,19 @@ export function MainNavigation() {
 
   return (
     <NavigationMenu className="max-w-full w-full justify-start">
-      <NavigationMenuList className={`${isMobile ? 'flex-col space-y-2' : 'flex-row'}`}>
-        <NavigationMenuItem>
-          <Link to="/" className={navigationMenuTriggerStyle()}>
+      <NavigationMenuList className={`${isMobile ? 'flex-col items-start space-y-2 w-full' : 'flex-row'}`}>
+        <NavigationMenuItem className={isMobile ? 'w-full' : ''}>
+          <Link to="/" className={`${navigationMenuTriggerStyle()} ${isMobile ? 'w-full justify-start' : ''}`}>
             Home
           </Link>
         </NavigationMenuItem>
         
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className="cursor-pointer">Study</NavigationMenuTrigger>
+        <NavigationMenuItem className={isMobile ? 'w-full' : ''}>
+          <NavigationMenuTrigger className={`cursor-pointer ${isMobile ? 'w-full justify-start' : ''}`}>
+            Study
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[300px] gap-3 p-4 bg-popover shadow-lg rounded-lg border border-border">
+            <ul className={`grid gap-3 p-4 bg-popover shadow-lg rounded-lg border border-border ${isMobile ? 'w-[calc(100vw-2rem)]' : 'w-[300px]'}`}>
               <li>
                 <Link
                   to="/study"
@@ -52,26 +54,26 @@ export function MainNavigation() {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <Link to="/analytics" className={navigationMenuTriggerStyle()}>
+        <NavigationMenuItem className={isMobile ? 'w-full' : ''}>
+          <Link to="/analytics" className={`${navigationMenuTriggerStyle()} ${isMobile ? 'w-full justify-start' : ''}`}>
             Analytics
           </Link>
         </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <Link to="/profile" className={navigationMenuTriggerStyle()}>
+        <NavigationMenuItem className={isMobile ? 'w-full' : ''}>
+          <Link to="/profile" className={`${navigationMenuTriggerStyle()} ${isMobile ? 'w-full justify-start' : ''}`}>
             Profile
           </Link>
         </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <Link to="/settings" className={navigationMenuTriggerStyle()}>
+        <NavigationMenuItem className={isMobile ? 'w-full' : ''}>
+          <Link to="/settings" className={`${navigationMenuTriggerStyle()} ${isMobile ? 'w-full justify-start' : ''}`}>
             Settings
           </Link>
         </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <Link to="/help" className={navigationMenuTriggerStyle()}>
+        <NavigationMenuItem className={isMobile ? 'w-full' : ''}>
+          <Link to="/help" className={`${navigationMenuTriggerStyle()} ${isMobile ? 'w-full justify-start' : ''}`}>
             Help
           </Link>
         </NavigationMenuItem>
