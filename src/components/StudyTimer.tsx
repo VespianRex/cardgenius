@@ -1,7 +1,9 @@
+
 import { useState, useEffect } from "react";
 import { Timer, Battery, Sun } from "lucide-react";
 import { toast } from "sonner";
-import { getOptimalBatchSize, suggestBreakTime, analyzeStudyHabits } from "../utils/study/studyOptimizer";
+import { getOptimalBatchSize, suggestBreakTime } from "../utils/study/studyOptimizer";
+import { analyzeStudyHabits } from "../utils/analytics/tracking";
 import { Button } from "./ui/button";
 import { Select } from "./ui/select";
 
