@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export const MindStateTracker = () => {
   const [lastBreak, setLastBreak] = useState<Date>(new Date());
@@ -48,7 +49,7 @@ export const MindStateTracker = () => {
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Focus Level</span>
             <div className="flex items-center gap-2">
-              <div className="h-2 w-24 bg-gray-200 rounded-full overflow-hidden">
+              <div className="h-2 w-24 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-primary transition-all duration-500"
                   style={{ width: `${focusScore}%` }}
@@ -66,12 +67,13 @@ export const MindStateTracker = () => {
               </span>
             </div>
           </div>
-          <button
+          <Button
             onClick={handleBreakTaken}
-            className="w-full px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+            className="w-full"
+            variant="default"
           >
             Record Break
-          </button>
+          </Button>
         </div>
       </CardContent>
     </Card>

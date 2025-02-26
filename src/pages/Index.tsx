@@ -1,7 +1,5 @@
-
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { StudySection } from "@/components/sections/StudySection";
 import { DeckList } from "@/components/DeckManagement/DeckList";
 import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard";
 import { FlashcardEditor } from "@/components/FlashcardManagement/FlashcardEditor";
@@ -11,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Plus, BookOpen, Brain, Rocket, ChartBar, Smile } from "lucide-react";
 
 const Index = () => {
-  const [showFlashcards, setShowFlashcards] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
 
   const features = [
