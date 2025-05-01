@@ -2,10 +2,8 @@
 import { useState, useEffect } from "react";
 import { Timer, Battery, Sun } from "lucide-react";
 import { toast } from "sonner";
-import { getOptimalBatchSize, suggestBreakTime } from "../utils/study/studyOptimizer";
-import { analyzeStudyHabits } from "../utils/analytics/tracking";
 import { Button } from "./ui/button";
-import { Select } from "./ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 interface StudyTimerProps {
   onBreakStart: () => void;
@@ -75,6 +73,22 @@ export const StudyTimer = ({ onBreakStart, onBreakEnd, onBatchSizeChange }: Stud
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
+  // Helper functions that were referenced but missing
+  const suggestBreakTime = (studyMinutes: number): boolean => {
+    // Logic to determine if a break is needed
+    return studyMinutes > 0 && studyMinutes % 25 === 0;
+  };
+
+  const getOptimalBatchSize = (metrics: any): number => {
+    // Simple algorithm to determine batch size based on energy level
+    switch(metrics.energyLevel) {
+      case 'high': return 15;
+      case 'medium': return 10;
+      case 'low': return 5;
+      default: return 10;
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -85,13 +99,15 @@ export const StudyTimer = ({ onBreakStart, onBreakEnd, onBatchSizeChange }: Stud
         
         <div className="flex items-center gap-2">
           <Battery className="w-4 h-4 text-muted-foreground" />
-          <Select
-            value={energyLevel}
-            onValueChange={(value: 'high' | 'medium' | 'low') => setEnergyLevel(value)}
-          >
-            <option value="high">High Energy</option>
-            <option value="medium">Medium Energy</option>
-            <option value="low">Low Energy</option>
+          <Select value={energyLevel} onValueChange={(value: any) => setEnergyLevel(value)}>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Energy Level" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="high">High Energy</SelectItem>
+              <SelectItem value="medium">Medium Energy</SelectItem>
+              <SelectItem value="low">Low Energy</SelectItem>
+            </SelectContent>
           </Select>
         </div>
       </div>

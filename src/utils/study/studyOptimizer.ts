@@ -1,123 +1,48 @@
 
-import { CardReview, SRSCard } from '../srsSystem';
-import { toast } from 'sonner';
-
-interface StudyMetrics {
-  timeOfDay: number;  // Hour of day (0-23)
-  energyLevel: 'high' | 'medium' | 'low';
-  consecutiveCards: number;
-  performance: number[];  // Recent performance scores
-}
+import { StudyMetrics } from "../analytics/tracking";
 
 export const getOptimalBatchSize = (metrics: StudyMetrics): number => {
   // Base batch size
-  let batchSize = 20;
-
-  // Adjust for time of day
+  let baseSize = 10;
+  
+  // Adjust based on energy level
+  if (metrics.energyLevel === 'high') baseSize += 5;
+  if (metrics.energyLevel === 'low') baseSize -= 5;
+  
+  // Adjust based on time of day (peak hours are 9-11 AM and 4-6 PM)
   const hour = metrics.timeOfDay;
-  if (hour >= 5 && hour <= 10) { // Morning
-    batchSize += 5; // People generally have better focus in the morning
-  } else if (hour >= 14 && hour <= 16) { // Post-lunch dip
-    batchSize -= 5;
+  if ((hour >= 9 && hour <= 11) || (hour >= 16 && hour <= 18)) {
+    baseSize += 2; // Slight boost during peak cognitive hours
   }
-
-  // Adjust for energy level
-  switch (metrics.energyLevel) {
-    case 'high':
-      batchSize += 5;
-      break;
-    case 'low':
-      batchSize -= 10;
-      break;
-    default:
-      break;
-  }
-
-  // Adjust for recent performance
-  if (metrics.performance.length > 0) {
-    const avgPerformance = metrics.performance.reduce((a, b) => a + b) / metrics.performance.length;
-    if (avgPerformance > 4) {
-      batchSize += 5;
-    } else if (avgPerformance < 3) {
-      batchSize -= 5;
-    }
-  }
-
-  // Prevent study fatigue
-  if (metrics.consecutiveCards > 50) {
-    batchSize = Math.max(5, batchSize - 10);
-  }
-
-  // Ensure reasonable limits
-  return Math.max(5, Math.min(30, batchSize));
+  
+  // Ensure batch size is within reasonable bounds
+  return Math.max(5, Math.min(baseSize, 20));
 };
 
-export const suggestBreakTime = (studyDurationMinutes: number): boolean => {
-  // Suggest breaks based on study duration
-  if (studyDurationMinutes >= 25) {
-    return studyDurationMinutes % 25 === 0; // Pomodoro-style breaks
+export const suggestBreakTime = (studyMinutes: number): boolean => {
+  // Implement pomodoro-like technique: suggest a break after 25 minutes
+  if (studyMinutes > 0 && studyMinutes % 25 === 0) {
+    return true;
   }
+  
   return false;
 };
 
-export const calculateLearningMetrics = (reviews: CardReview[]) => {
-  if (reviews.length === 0) {
-    return {
-      retentionRate: 0,
-      averageInterval: 0,
-      totalReviews: 0,
-    };
-  }
-
-  const correctReviews = reviews.filter(r => r.consecutiveCorrect > 0).length;
-  const retentionRate = (correctReviews / reviews.length) * 100;
-  const averageInterval = reviews.reduce((sum, r) => sum + r.interval, 0) / reviews.length;
-
-  return {
-    retentionRate,
-    averageInterval,
-    totalReviews: reviews.length,
-  };
-};
-
-export const trackLearningProgress = (card: SRSCard, reviews: CardReview[]) => {
-  const metrics = calculateLearningMetrics(reviews);
-
-  // Provide feedback based on learning progress
-  if (metrics.retentionRate < 70 && metrics.totalReviews > 10) {
-    toast.info("Tip: Try using mnemonics or breaking down complex cards", {
-      id: "learning-tip",
-    });
-  }
-
-  // Log learning progress for analysis
-  console.log('Learning progress:', {
-    cardId: card.cardId,
-    metrics,
-    timestamp: new Date().toISOString(),
-  });
-
-  return metrics;
-};
-
-export const suggestStudyOptimizations = (reviews: CardReview[]) => {
-  const metrics = calculateLearningMetrics(reviews);
-  const now = new Date();
-  const hour = now.getHours();
-
-  // Suggest optimal study times
-  if (metrics.totalReviews > 0) {
-    if (hour >= 23 || hour <= 5) {
-      toast.info("Your retention might be better during daytime hours", {
-        id: "study-time-tip",
-      });
-    }
-
-    // Suggest interval adjustments based on performance
-    if (metrics.retentionRate > 90 && metrics.averageInterval < 7) {
-      toast.success("You're doing great! We'll increase intervals to optimize your learning", {
-        id: "interval-tip",
-      });
-    }
-  }
+export const calculateStudyEfficiency = (metrics: {
+  startTime: Date;
+  endTime: Date;
+  cardsReviewed: number;
+  correctAnswers: number;
+}): number => {
+  // Calculate study duration in minutes
+  const durationMinutes = (metrics.endTime.getTime() - metrics.startTime.getTime()) / (1000 * 60);
+  
+  // Calculate cards per minute
+  const cardsPerMinute = metrics.cardsReviewed / durationMinutes;
+  
+  // Calculate accuracy
+  const accuracy = metrics.correctAnswers / metrics.cardsReviewed;
+  
+  // Combine metrics (weighted formula)
+  return (cardsPerMinute * 0.6) + (accuracy * 0.4 * 10);
 };

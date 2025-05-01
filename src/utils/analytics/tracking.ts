@@ -1,52 +1,57 @@
-import { StudyAnalytics } from './types';
-import { toast } from 'sonner';
 
-export const trackStudyProgress = (analytics: StudyAnalytics) => {
-  console.log('Tracking study progress:', analytics);
-  
-  if (analytics.streak % 5 === 0) {
-    toast.success(`🔥 ${analytics.streak} card streak! Keep going!`);
-  }
-
-  if (analytics.cardsReviewed % 10 === 0) {
-    const retentionMessage = analytics.retentionRate >= 80 
-      ? "Excellent retention rate!" 
-      : "Keep practicing to improve retention!";
-    toast.info(`📚 You've reviewed ${analytics.cardsReviewed} cards! ${retentionMessage}`);
-  }
-
-  const efficiency = (analytics.correctAnswers / analytics.cardsReviewed) * 100;
-  
-  return {
-    ...analytics,
-    efficiency,
-    lastUpdated: new Date(),
-  };
-};
-
-interface StudySession {
+export interface StudyHabit {
+  timeOfDay: number;
+  duration: number;
+  performance: number;
   date: Date;
 }
 
-export const analyzeStudyHabits = (sessions: StudySession[]): void => {
-  // Initialize timeDistribution as a number-only record
-  const timeDistribution: Record<number, number> = {};
+export interface StudyMetrics {
+  timeOfDay: number;
+  energyLevel: string;
+  consecutiveCards: number;
+  performance: any[];
+}
 
-  // Populate the distribution
-  sessions.forEach(session => {
-    const hour = session.date.getHours();
-    timeDistribution[hour] = (timeDistribution[hour] || 0) + 1;
+export const analyzeStudyHabits = (habits: StudyHabit[]) => {
+  if (!habits.length) return null;
+
+  // Find optimal study time based on performance
+  const timePerformanceMap = habits.reduce((acc: {[key: number]: number[]}, habit) => {
+    const hour = habit.timeOfDay;
+    if (!acc[hour]) acc[hour] = [];
+    acc[hour].push(habit.performance);
+    return acc;
+  }, {});
+
+  const optimalTimes = Object.entries(timePerformanceMap).map(([hour, performances]) => {
+    const avgPerformance = performances.reduce((sum, val) => sum + val, 0) / performances.length;
+    return { hour: parseInt(hour), avgPerformance };
+  }).sort((a, b) => b.avgPerformance - a.avgPerformance);
+
+  return {
+    optimalStudyHours: optimalTimes.slice(0, 3).map(t => parseInt(t.hour)),
+    studyFrequency: habits.length / 7, // average sessions per day over a week
+    averageDuration: habits.reduce((sum, h) => sum + h.duration, 0) / habits.length,
+    averagePerformance: habits.reduce((sum, h) => sum + h.performance, 0) / habits.length,
+  };
+};
+
+// Track a study session
+export const trackStudySession = (metrics: {
+  duration: number;
+  cardsReviewed: number; 
+  performance: number;
+}) => {
+  const existingData = localStorage.getItem('studyAnalytics');
+  const analytics = existingData ? JSON.parse(existingData) : { sessions: [] };
+  
+  analytics.sessions.push({
+    ...metrics,
+    timestamp: new Date().toISOString()
   });
-
-  // Find the hour with the most sessions
-  const entries = Object.entries(timeDistribution);
-  if (entries.length === 0) {
-    return;
-  }
-
-  const [preferredHour] = entries.reduce((max, current) => {
-    return current[1] > max[1] ? current : max;
-  });
-
-  toast.info(`Your most productive study time appears to be around ${preferredHour}:00`);
+  
+  localStorage.setItem('studyAnalytics', JSON.stringify(analytics));
+  
+  return analytics;
 };

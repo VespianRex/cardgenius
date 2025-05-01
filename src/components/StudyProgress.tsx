@@ -1,8 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Brain, Zap, Clock, Trophy, Flame } from 'lucide-react';
-import { toast } from 'sonner';
+
+import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface StudyProgressProps {
   totalCards: number;
@@ -16,86 +14,71 @@ interface StudyProgressProps {
   streak: number;
 }
 
-export const StudyProgress = ({ totalCards, cardsReviewed, ratings, startTime, streak }: StudyProgressProps) => {
-  const [studyDuration, setStudyDuration] = useState('0:00');
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date();
-      const diff = now.getTime() - startTime.getTime();
-      const minutes = Math.floor(diff / 60000);
-      const seconds = Math.floor((diff % 60000) / 1000);
-      setStudyDuration(`${minutes}:${seconds.toString().padStart(2, '0')}`);
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [startTime]);
-
-  const progressPercentage = (cardsReviewed / totalCards) * 100;
-  const masteryScore = ((ratings.easy * 3 + ratings.medium * 2 + ratings.hard) / (cardsReviewed * 3)) * 100 || 0;
+export const StudyProgress = ({
+  totalCards,
+  cardsReviewed,
+  ratings,
+  startTime,
+  streak
+}: StudyProgressProps) => {
+  // Calculate progress percentage
+  const progressPercentage = Math.round((cardsReviewed / totalCards) * 100);
+  
+  // Calculate study time in minutes
+  const studyTimeMinutes = Math.round(
+    (new Date().getTime() - startTime.getTime()) / (1000 * 60)
+  );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 animate-fade-in">
-      <Card className="p-6 bg-gradient-to-br from-medical-primary/5 to-transparent border-medical-accent/20">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-medical-primary/10 rounded-lg">
-            <Brain className="w-5 h-5 text-medical-primary" />
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg">Study Progress</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Progress</span>
+            <span className="font-medium">{progressPercentage}%</span>
           </div>
-          <h3 className="font-semibold">Study Progress</h3>
+          <Progress value={progressPercentage} className="h-2" />
         </div>
-        <Progress value={progressPercentage} className="h-2 mb-2" />
-        <div className="flex justify-between text-sm text-muted-foreground mt-2">
-          <span>{cardsReviewed} of {totalCards} cards</span>
-          <span>{Math.round(progressPercentage)}% complete</span>
-        </div>
-      </Card>
 
-      <Card className="p-6 bg-gradient-to-br from-medical-secondary/5 to-transparent border-medical-accent/20">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-medical-secondary/10 rounded-lg">
-            <Zap className="w-5 h-5 text-medical-secondary" />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <p className="text-sm text-muted-foreground">Cards Reviewed</p>
+            <p className="text-lg font-medium">
+              {cardsReviewed}/{totalCards}
+            </p>
           </div>
-          <h3 className="font-semibold">Mastery Score</h3>
+          <div>
+            <p className="text-sm text-muted-foreground">Study Time</p>
+            <p className="text-lg font-medium">{studyTimeMinutes} min</p>
+          </div>
         </div>
-        <Progress value={masteryScore} className="h-2 mb-2" />
-        <div className="flex justify-between text-sm text-muted-foreground mt-2">
-          <span>Current mastery</span>
-          <span>{Math.round(masteryScore)}%</span>
-        </div>
-      </Card>
 
-      <Card className="p-6 bg-gradient-to-br from-medical-accent/5 to-transparent border-medical-accent/20">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-medical-accent/10 rounded-lg">
-            <Clock className="w-5 h-5 text-medical-accent" />
+        <div className="grid grid-cols-3 gap-2 pt-2">
+          <div className="text-center p-2 bg-green-50 dark:bg-green-900/20 rounded-md">
+            <p className="text-xs text-muted-foreground">Easy</p>
+            <p className="font-medium">{ratings.easy}</p>
           </div>
-          <h3 className="font-semibold">Study Time</h3>
+          <div className="text-center p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-md">
+            <p className="text-xs text-muted-foreground">Medium</p>
+            <p className="font-medium">{ratings.medium}</p>
+          </div>
+          <div className="text-center p-2 bg-red-50 dark:bg-red-900/20 rounded-md">
+            <p className="text-xs text-muted-foreground">Hard</p>
+            <p className="font-medium">{ratings.hard}</p>
+          </div>
         </div>
-        <p className="text-2xl font-bold">{studyDuration}</p>
-        <p className="text-sm text-muted-foreground mt-1">Minutes studied</p>
-      </Card>
 
-      <Card className="p-6 bg-gradient-to-br from-medical-primary/5 to-transparent border-medical-accent/20">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-medical-primary/10 rounded-lg">
-            <Trophy className="w-5 h-5 text-medical-primary" />
+        <div className="pt-2">
+          <p className="text-sm text-muted-foreground">Current Streak</p>
+          <div className="flex items-center gap-2">
+            <p className="text-lg font-medium">{streak} days</p>
+            <div className="h-2 w-2 bg-primary rounded-full animate-pulse"></div>
           </div>
-          <h3 className="font-semibold">Study Streak</h3>
         </div>
-        <p className="text-2xl font-bold">{streak}</p>
-        <p className="text-sm text-muted-foreground mt-1">Current streak</p>
-      </Card>
-
-      <Card className="p-6 bg-gradient-to-br from-medical-accent/5 to-transparent border-medical-accent/20">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-medical-accent/10 rounded-lg">
-            <Flame className="w-5 h-5 text-medical-accent" />
-          </div>
-          <h3 className="font-semibold">Current Streak</h3>
-        </div>
-        <p className="text-2xl font-bold">{streak}</p>
-        <p className="text-sm text-muted-foreground mt-1">Cards in a row</p>
-      </Card>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
