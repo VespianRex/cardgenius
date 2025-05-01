@@ -55,3 +55,18 @@ export const trackStudySession = (metrics: {
   
   return analytics;
 };
+
+// Add this function to fix the missing export error
+export const trackStudyProgress = (analytics: any) => {
+  try {
+    // Store the analytics in localStorage
+    localStorage.setItem('studyProgress', JSON.stringify({
+      ...analytics,
+      lastUpdated: new Date().toISOString()
+    }));
+    return analytics;
+  } catch (error) {
+    console.error('Failed to track study progress:', error);
+    return analytics;
+  }
+};
