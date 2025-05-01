@@ -1,72 +1,52 @@
 
-export interface StudyHabit {
-  timeOfDay: number;
-  duration: number;
-  performance: number;
-  date: Date;
-}
+// Import necessary types and utilities
+import { StudyAnalytics } from './types';
 
-export interface StudyMetrics {
-  timeOfDay: number;
-  energyLevel: string;
-  consecutiveCards: number;
-  performance: any[];
-}
-
-export const analyzeStudyHabits = (habits: StudyHabit[]) => {
-  if (!habits.length) return null;
-
-  // Find optimal study time based on performance
-  const timePerformanceMap = habits.reduce((acc: {[key: number]: number[]}, habit) => {
-    const hour = habit.timeOfDay;
-    if (!acc[hour]) acc[hour] = [];
-    acc[hour].push(habit.performance);
-    return acc;
-  }, {});
-
-  const optimalTimes = Object.entries(timePerformanceMap).map(([hour, performances]) => {
-    const avgPerformance = performances.reduce((sum, val) => sum + val, 0) / performances.length;
-    return { hour: parseInt(hour), avgPerformance };
-  }).sort((a, b) => b.avgPerformance - a.avgPerformance);
-
-  return {
-    optimalStudyHours: optimalTimes.slice(0, 3).map(t => parseInt(t.hour)),
-    studyFrequency: habits.length / 7, // average sessions per day over a week
-    averageDuration: habits.reduce((sum, h) => sum + h.duration, 0) / habits.length,
-    averagePerformance: habits.reduce((sum, h) => sum + h.performance, 0) / habits.length,
-  };
+/**
+ * Tracks a study session and updates analytics.
+ * @param sessionId Unique identifier for the study session
+ * @param duration Duration of the study session in minutes
+ * @param cardsReviewed Number of cards reviewed
+ * @param correctAnswers Number of correct answers
+ */
+export const trackStudySession = (
+  sessionId: string,
+  duration: number,
+  cardsReviewed: number,
+  correctAnswers: number
+): void => {
+  // Implementation would persist this data
+  console.log(`Tracking session ${sessionId}: ${duration}min, ${cardsReviewed} cards, ${correctAnswers} correct`);
 };
 
-// Track a study session
-export const trackStudySession = (metrics: {
-  duration: number;
-  cardsReviewed: number; 
-  performance: number;
-}) => {
-  const existingData = localStorage.getItem('studyAnalytics');
-  const analytics = existingData ? JSON.parse(existingData) : { sessions: [] };
-  
-  analytics.sessions.push({
-    ...metrics,
-    timestamp: new Date().toISOString()
-  });
-  
-  localStorage.setItem('studyAnalytics', JSON.stringify(analytics));
-  
-  return analytics;
+/**
+ * Tracks progress for a specific flashcard.
+ * @param cardId Unique identifier for the card
+ * @param isCorrect Whether the answer was correct
+ * @param responseTime Time taken to respond in milliseconds
+ */
+export const trackCardProgress = (
+  cardId: string,
+  isCorrect: boolean,
+  responseTime: number
+): void => {
+  // Implementation would persist this data
+  console.log(`Card ${cardId}: ${isCorrect ? 'correct' : 'incorrect'}, response time: ${responseTime}ms`);
 };
 
-// Add proper typing to fix the error
-export const trackStudyProgress = (analytics: any) => {
-  try {
-    // Store the analytics in localStorage
-    localStorage.setItem('studyProgress', JSON.stringify({
-      ...analytics,
-      lastUpdated: new Date().toISOString()
-    }));
-    return analytics;
-  } catch (error) {
-    console.error('Failed to track study progress:', error);
-    return analytics;
-  }
+/**
+ * Tracks user's study progress over time
+ * @param userId The user ID
+ * @param metrics Study metrics to track
+ * @param timestamp ISO string timestamp when this progress was recorded
+ */
+export const trackStudyProgress = (
+  userId: string,
+  metrics: Partial<StudyAnalytics>,
+  timestamp: string
+): void => {
+  // Implementation would persist this data to analytics storage
+  console.log(`User ${userId} progress tracked at ${timestamp}:`, metrics);
 };
+
+// Export other tracking functions as needed

@@ -1,3 +1,4 @@
+
 import { Button } from "./ui/button";
 import { Timer, BookOpen, Plus, History } from "lucide-react";
 import {
@@ -23,19 +24,19 @@ export const QuickActions = () => {
         <DropdownMenuTrigger asChild>
           <Button 
             size="lg" 
-            className="h-14 w-14 rounded-full bg-medical-primary hover:bg-medical-primary/90 shadow-lg"
+            className="h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-medical-primary to-medical-primary/80 hover:from-medical-primary/90 hover:to-medical-primary/70"
           >
             <Plus className="h-6 w-6" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuItem onClick={handleQuickStart} className="gap-2">
             <Timer className="h-4 w-4" />
-            Quick Study
+            Quick Study Session
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleRecentCards} className="gap-2">
             <History className="h-4 w-4" />
-            Recent Cards
+            Recent Flashcards
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
