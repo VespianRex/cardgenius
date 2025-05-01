@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { StudyHeader } from "./StudyHeader";
 import { StudyControls } from "./StudyControls";
@@ -78,7 +77,7 @@ export const StudySession = ({ flashcards }: StudySessionProps) => {
 
   useEffect(() => {
     if (currentCardIndex >= 0 && currentCardIndex < flashcards.length) {
-      const card = flashcards[currentCardIndex] as SRSCard;
+      const card = flashcards[currentCardIndex] as unknown as SRSCard;
       setCurrentMaturity(getMaturityLevel(card));
     }
   }, [currentCardIndex, flashcards]);

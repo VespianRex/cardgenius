@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { ReviewQueueManager } from '../utils/queueManager';
 import { calculateNextReview } from '../utils/srsSystem';
@@ -20,7 +21,7 @@ export const useStudySession = (flashcards: Array<{ front: string; back: string 
   useEffect(() => {
     // Load saved study progress
     const savedData = loadFromStorage();
-    if (savedData.cards.length > 0) {
+    if (savedData && savedData.cards && savedData.cards.length > 0) {
       console.log('Loaded saved study progress:', savedData);
     }
 
@@ -51,8 +52,10 @@ export const useStudySession = (flashcards: Array<{ front: string; back: string 
     setQueueManager(manager);
     console.log('Initialized ReviewQueueManager with mode:', studyMode);
 
-    // Suggest optimizations based on previous reviews
-    suggestStudyOptimizations(savedData.reviews);
+    // Suggest optimizations based on previous reviews if data exists
+    if (savedData && savedData.reviews) {
+      suggestStudyOptimizations(savedData.reviews);
+    }
   }, [studyMode, flashcards]);
 
   const handleNextCard = () => {

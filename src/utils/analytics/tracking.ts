@@ -56,7 +56,7 @@ export const trackStudySession = (metrics: {
   return analytics;
 };
 
-// Add this function to fix the missing export error
+// Add proper typing to fix the error
 export const trackStudyProgress = (analytics: any) => {
   try {
     // Store the analytics in localStorage
