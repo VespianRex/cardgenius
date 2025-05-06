@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { 
   StudyAnalytics, 
@@ -93,7 +94,10 @@ export const useStudyAnalytics = () => {
     };
 
     setAnalytics(newAnalytics);
-    const trackedAnalytics = trackStudyProgress(newAnalytics);
+    
+    // Fix: Call trackStudyProgress with all required arguments
+    const userId = "user-" + new Date().getTime(); // Generate a temporary user ID
+    trackStudyProgress(userId, newAnalytics, new Date().toISOString());
     
     if (difficulty === 'easy' && confidence >= 4) {
       setStreak(prev => {

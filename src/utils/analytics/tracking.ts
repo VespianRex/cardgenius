@@ -3,6 +3,15 @@
 import { StudyAnalytics } from './types';
 
 /**
+ * Study metrics type definition for optimization functions
+ */
+export interface StudyMetrics {
+  energyLevel: 'low' | 'medium' | 'high';
+  timeOfDay: number; // Hour of day (0-23)
+  focusScore?: number;
+}
+
+/**
  * Tracks a study session and updates analytics.
  * @param sessionId Unique identifier for the study session
  * @param duration Duration of the study session in minutes
