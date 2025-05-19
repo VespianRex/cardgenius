@@ -1,15 +1,19 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Share2, MessageCircle, FileText, Plus, Check } from "lucide-react";
+import { Users, Share2, MessageCircle, FileText, Plus, Check, Mail, UserPlus, Search, Pencil, X } from "lucide-react";
 import { MagicCard } from "@/components/ui/magic-card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { toast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
 
 const studyGroups = [
   {
@@ -94,6 +98,24 @@ function getAvatarColor(initial: string) {
 
 export default function Collaboration() {
   const [activeTab, setActiveTab] = useState("groups");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showCreateGroupDialog, setShowCreateGroupDialog] = useState(false);
+  const [showShareDeckDialog, setShowShareDeckDialog] = useState(false);
+  
+  const createGroupForm = useForm({
+    defaultValues: {
+      groupName: "",
+      description: "",
+      isPrivate: false
+    }
+  });
+
+  const shareDeckForm = useForm({
+    defaultValues: {
+      deckName: "",
+      recipients: ""
+    }
+  });
   
   const handleJoinGroup = (groupId: number) => {
     toast({
@@ -108,6 +130,33 @@ export default function Collaboration() {
       description: "The shared deck has been added to your library.",
     });
   };
+  
+  const handleCreateGroup = (data: any) => {
+    toast({
+      title: "Study group created!",
+      description: "Your new study group has been created successfully.",
+    });
+    setShowCreateGroupDialog(false);
+    createGroupForm.reset();
+  };
+  
+  const handleShareDeck = (data: any) => {
+    toast({
+      title: "Deck shared!",
+      description: `Your deck has been shared with ${data.recipients.split(',').length} recipients.`,
+    });
+    setShowShareDeckDialog(false);
+    shareDeckForm.reset();
+  };
+
+  const filteredGroups = studyGroups.filter(group => 
+    group.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  
+  const filteredDecks = sharedDecks.filter(deck => 
+    deck.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    deck.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -116,6 +165,74 @@ export default function Collaboration() {
         <p className="text-muted-foreground">
           Learn together with peer annotations, shared decks, and performance comparisons.
         </p>
+      </div>
+      
+      <div className="flex items-center space-x-4 mt-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input 
+            className="pl-10" 
+            placeholder="Search groups, decks, or tags..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <Dialog open={showShareDeckDialog} onOpenChange={setShowShareDeckDialog}>
+          <DialogTrigger asChild>
+            <Button className="gap-2">
+              <Share2 className="h-4 w-4" />
+              Share Deck
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Share a Deck</DialogTitle>
+              <DialogDescription>
+                Share your flashcard deck with colleagues or study groups.
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={shareDeckForm.handleSubmit(handleShareDeck)}>
+              <div className="grid gap-4 py-4">
+                <div className="space-y-2">
+                  <label htmlFor="deck-select" className="text-sm font-medium">Select Deck</label>
+                  <select 
+                    id="deck-select" 
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    {...shareDeckForm.register("deckName")}
+                  >
+                    <option value="">Select a deck...</option>
+                    <option value="Cardiology Basics">Cardiology Basics</option>
+                    <option value="Respiratory System">Respiratory System</option>
+                    <option value="Medical Terminology">Medical Terminology</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="recipients" className="text-sm font-medium">Recipients</label>
+                  <Input 
+                    id="recipients" 
+                    placeholder="Email addresses, comma separated"
+                    {...shareDeckForm.register("recipients")}
+                  />
+                  <p className="text-sm text-muted-foreground">Enter email addresses separated by commas</p>
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="message" className="text-sm font-medium">Message (Optional)</label>
+                  <textarea 
+                    id="message" 
+                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    placeholder="Add a personal message..."
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setShowShareDeckDialog(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">Share</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
       
       <Tabs 
@@ -136,7 +253,7 @@ export default function Collaboration() {
         
         <TabsContent value="groups" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {studyGroups.map((group) => (
+            {filteredGroups.map((group) => (
               <MagicCard key={group.id} className="relative overflow-hidden">
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
@@ -178,16 +295,64 @@ export default function Collaboration() {
               </MagicCard>
             ))}
             
-            <MagicCard className="flex flex-col items-center justify-center p-6 border-dashed">
-              <Plus className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium mb-2">Create Study Group</h3>
-              <p className="text-center text-muted-foreground mb-4">
-                Start a new group to collaborate with classmates
-              </p>
-              <Button>
-                Create New Group
-              </Button>
-            </MagicCard>
+            <Dialog open={showCreateGroupDialog} onOpenChange={setShowCreateGroupDialog}>
+              <DialogTrigger asChild>
+                <MagicCard className="flex flex-col items-center justify-center p-6 border-dashed cursor-pointer hover:bg-accent/50 transition-colors">
+                  <Plus className="h-12 w-12 text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium mb-2">Create Study Group</h3>
+                  <p className="text-center text-muted-foreground mb-4">
+                    Start a new group to collaborate with classmates
+                  </p>
+                  <Button>
+                    Create New Group
+                  </Button>
+                </MagicCard>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create a Study Group</DialogTitle>
+                  <DialogDescription>
+                    Create a new group to collaborate with your peers on study materials.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={createGroupForm.handleSubmit(handleCreateGroup)}>
+                  <div className="grid gap-4 py-4">
+                    <div className="space-y-2">
+                      <label htmlFor="group-name" className="text-sm font-medium">Group Name</label>
+                      <Input 
+                        id="group-name" 
+                        placeholder="Enter a name for your group"
+                        {...createGroupForm.register("groupName")}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label htmlFor="description" className="text-sm font-medium">Description</label>
+                      <textarea 
+                        id="description" 
+                        className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="Describe the focus of your study group"
+                        {...createGroupForm.register("description")}
+                      />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input 
+                        type="checkbox" 
+                        id="private-group" 
+                        className="rounded border-gray-300 text-primary focus:ring-primary"
+                        {...createGroupForm.register("isPrivate")}
+                      />
+                      <label htmlFor="private-group" className="text-sm font-medium">Make this group private</label>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button type="button" variant="outline" onClick={() => setShowCreateGroupDialog(false)}>
+                      Cancel
+                    </Button>
+                    <Button type="submit">Create Group</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
           
           <Card>
@@ -205,6 +370,12 @@ export default function Collaboration() {
                     <span className="text-muted-foreground text-sm">2 hours ago</span>
                   </div>
                   <p>Added 24 new cards to "Cardiac Pharmacology"</p>
+                  <div className="flex gap-2 mt-2">
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <MessageCircle className="h-4 w-4" /> Comment
+                    </Button>
+                    <Button variant="ghost" size="sm">View Cards</Button>
+                  </div>
                 </div>
               </div>
               <Separator />
@@ -218,6 +389,12 @@ export default function Collaboration() {
                     <span className="text-muted-foreground text-sm">Yesterday</span>
                   </div>
                   <p>Shared feedback on "Neuroanatomy" deck</p>
+                  <div className="flex gap-2 mt-2">
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <MessageCircle className="h-4 w-4" /> Comment
+                    </Button>
+                    <Button variant="ghost" size="sm">View Feedback</Button>
+                  </div>
                 </div>
               </div>
               <Separator />
@@ -231,6 +408,12 @@ export default function Collaboration() {
                     <span className="text-muted-foreground text-sm">2 days ago</span>
                   </div>
                   <p>Created a new study session for "USMLE Step 1 Prep"</p>
+                  <div className="flex gap-2 mt-2">
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <MessageCircle className="h-4 w-4" /> Comment
+                    </Button>
+                    <Button variant="ghost" size="sm">Join Session</Button>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -239,8 +422,8 @@ export default function Collaboration() {
         
         <TabsContent value="shared" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {sharedDecks.map((deck) => (
-              <Card key={deck.id} className="overflow-hidden">
+            {filteredDecks.map((deck) => (
+              <Card key={deck.id} className="overflow-hidden hover:shadow-md transition-shadow">
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start">
                     <CardTitle>{deck.title}</CardTitle>
@@ -333,6 +516,12 @@ export default function Collaboration() {
                 </div>
               </div>
             </CardContent>
+            <CardFooter className="border-t p-4">
+              <Button variant="ghost" size="sm" className="w-full gap-2">
+                <Mail className="h-4 w-4" />
+                View All Invitations
+              </Button>
+            </CardFooter>
           </Card>
         </TabsContent>
       </Tabs>

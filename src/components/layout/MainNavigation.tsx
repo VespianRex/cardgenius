@@ -12,7 +12,8 @@ import {
   Menu,
   FileText,
   X,
-  Users
+  Users,
+  Brain
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ const menuItems = [
   { icon: Home, label: "Home", path: "/" },
   { icon: BookOpen, label: "Study", path: "/study" },
   { icon: BookOpen, label: "Library", path: "/library" },
+  { icon: Brain, label: "Mnemonics", path: "/mnemonics" },
   { icon: BarChart2, label: "Analytics", path: "/analytics" },
   { icon: FileText, label: "Roadmap", path: "/roadmap" },
   { icon: Users, label: "Collaboration", path: "/collaboration" },
