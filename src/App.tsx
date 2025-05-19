@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -13,6 +14,7 @@ import Help from "./pages/Help";
 import Settings from "./pages/Settings";
 import Library from "./pages/Library";
 import Analytics from "./pages/Analytics";
+import Roadmap from "./pages/Roadmap";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -32,6 +34,7 @@ function App() {
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/library" element={<Library />} />
                 <Route path="/analytics" element={<Analytics />} />
+                <Route path="/roadmap" element={<Roadmap />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </MainLayout>

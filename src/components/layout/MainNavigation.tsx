@@ -10,6 +10,7 @@ import {
   Settings,
   HelpCircle,
   Menu,
+  FileText,
   X
 } from "lucide-react";
 import { useState } from "react";
@@ -26,6 +27,7 @@ const menuItems = [
   { icon: BookOpen, label: "Study", path: "/study" },
   { icon: BookOpen, label: "Library", path: "/library" },
   { icon: BarChart2, label: "Analytics", path: "/analytics" },
+  { icon: FileText, label: "Roadmap", path: "/roadmap" },
   { icon: User, label: "Profile", path: "/profile" },
   { icon: Settings, label: "Settings", path: "/settings" },
   { icon: HelpCircle, label: "Help", path: "/help" }
