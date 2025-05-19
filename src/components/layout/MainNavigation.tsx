@@ -11,7 +11,8 @@ import {
   HelpCircle,
   Menu,
   FileText,
-  X
+  X,
+  Users
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -28,6 +29,7 @@ const menuItems = [
   { icon: BookOpen, label: "Library", path: "/library" },
   { icon: BarChart2, label: "Analytics", path: "/analytics" },
   { icon: FileText, label: "Roadmap", path: "/roadmap" },
+  { icon: Users, label: "Collaboration", path: "/collaboration" },
   { icon: User, label: "Profile", path: "/profile" },
   { icon: Settings, label: "Settings", path: "/settings" },
   { icon: HelpCircle, label: "Help", path: "/help" }

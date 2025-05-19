@@ -15,6 +15,8 @@ import Settings from "./pages/Settings";
 import Library from "./pages/Library";
 import Analytics from "./pages/Analytics";
 import Roadmap from "./pages/Roadmap";
+import Collaboration from "./pages/Collaboration";
+import Mnemonics from "./pages/Mnemonics";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -35,6 +37,8 @@ function App() {
                 <Route path="/library" element={<Library />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/roadmap" element={<Roadmap />} />
+                <Route path="/collaboration" element={<Collaboration />} />
+                <Route path="/mnemonics" element={<Mnemonics />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </MainLayout>
