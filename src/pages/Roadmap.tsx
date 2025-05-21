@@ -9,7 +9,7 @@ import { MagicCard } from "@/components/ui/magic-card";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BookOpen, CheckCircle, Calendar, Clock, Star, Award, MapPin, Lock, Unlock, Zap, ArrowRight, ChevronRight, FileText, BarChart2, Users, Brain, Lightbulb } from "lucide-react";
+import { BookOpen, CheckCircle, Calendar, Clock, Star, Award, MapPin, Lock, Unlock, Zap, ArrowRight, ChevronRight, FileText, BarChart2, Users, Brain, Lightbulb, Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
