@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -39,49 +40,57 @@ export const AnalyticsDashboard = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold">Learning Analytics</h2>
-        <div className="relative">
+    <div className="max-w-7xl mx-auto p-6 space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <h2 className="text-3xl font-bold text-gray-900">Learning Analytics</h2>
+        <div className="relative max-w-sm">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
             type="search"
             placeholder="Search cards..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 w-[300px]"
+            className="pl-10 w-full"
           />
         </div>
       </div>
 
       <SearchFilters />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Daily Progress</h3>
-          <ProgressChart data={analyticsData.dailyProgress} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+          <h3 className="text-lg font-semibold mb-4 text-blue-900">Daily Progress</h3>
+          <div className="h-[280px]">
+            <ProgressChart data={analyticsData.dailyProgress} />
+          </div>
         </Card>
 
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Success Rate</h3>
-          <SuccessRateChart data={analyticsData.successRates} />
+        <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+          <h3 className="text-lg font-semibold mb-4 text-green-900">Success Rate</h3>
+          <div className="h-[280px]">
+            <SuccessRateChart data={analyticsData.successRates} />
+          </div>
         </Card>
 
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Study Time</h3>
-          <StudyTimeChart data={analyticsData.studyTime} />
+        <Card className="p-6 bg-gradient-to-br from-purple-50 to-violet-50 border-purple-200">
+          <h3 className="text-lg font-semibold mb-4 text-purple-900">Study Time</h3>
+          <div className="h-[280px]">
+            <StudyTimeChart data={analyticsData.studyTime} />
+          </div>
         </Card>
       </div>
 
-      <LearningPatterns data={analyticsData.dailyProgress} />
+      <div className="w-full">
+        <LearningPatterns data={analyticsData.dailyProgress} />
+      </div>
       
-      <div className="mt-8">
-        <h3 className="text-2xl font-bold mb-4">Achievements</h3>
+      <div className="space-y-6">
+        <h3 className="text-2xl font-bold text-gray-900">Achievements</h3>
         <AchievementSystem />
       </div>
 
-      <div className="mt-8">
-        <h3 className="text-2xl font-bold mb-4">Smart Card Organization</h3>
+      <div className="space-y-6">
+        <h3 className="text-2xl font-bold text-gray-900">Smart Card Organization</h3>
         <SmartCardOrganizer />
       </div>
     </div>
