@@ -40,58 +40,66 @@ export const AnalyticsDashboard = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h2 className="text-3xl font-bold text-gray-900">Learning Analytics</h2>
-        <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            type="search"
-            placeholder="Search cards..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 w-full"
-          />
+    <div className="w-full min-h-screen bg-gray-50/30 p-4 md:p-6">
+      <div className="max-w-[1400px] mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Learning Analytics</h2>
+          <div className="relative w-full md:w-80">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              type="search"
+              placeholder="Search cards..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 w-full"
+            />
+          </div>
         </div>
-      </div>
 
-      <SearchFilters />
+        {/* Filters */}
+        <SearchFilters />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
-          <h3 className="text-lg font-semibold mb-4 text-blue-900">Daily Progress</h3>
-          <div className="h-[280px]">
-            <ProgressChart data={analyticsData.dailyProgress} />
-          </div>
-        </Card>
+        {/* Main Chart Cards Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+          <Card className="p-4 md:p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4 text-blue-900">Daily Progress</h3>
+            <div className="w-full aspect-[4/3]">
+              <ProgressChart data={analyticsData.dailyProgress} />
+            </div>
+          </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
-          <h3 className="text-lg font-semibold mb-4 text-green-900">Success Rate</h3>
-          <div className="h-[280px]">
-            <SuccessRateChart data={analyticsData.successRates} />
-          </div>
-        </Card>
+          <Card className="p-4 md:p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4 text-green-900">Success Rate</h3>
+            <div className="w-full aspect-[4/3]">
+              <SuccessRateChart data={analyticsData.successRates} />
+            </div>
+          </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-purple-50 to-violet-50 border-purple-200">
-          <h3 className="text-lg font-semibold mb-4 text-purple-900">Study Time</h3>
-          <div className="h-[280px]">
-            <StudyTimeChart data={analyticsData.studyTime} />
-          </div>
-        </Card>
-      </div>
+          <Card className="p-4 md:p-6 bg-gradient-to-br from-purple-50 to-violet-50 border-purple-200 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4 text-purple-900">Study Time</h3>
+            <div className="w-full aspect-[4/3]">
+              <StudyTimeChart data={analyticsData.studyTime} />
+            </div>
+          </Card>
+        </div>
 
-      <div className="w-full">
-        <LearningPatterns data={analyticsData.dailyProgress} />
-      </div>
-      
-      <div className="space-y-6">
-        <h3 className="text-2xl font-bold text-gray-900">Achievements</h3>
-        <AchievementSystem />
-      </div>
+        {/* Learning Patterns */}
+        <div className="w-full">
+          <LearningPatterns data={analyticsData.dailyProgress} />
+        </div>
+        
+        {/* Achievements Section */}
+        <div className="space-y-4 md:space-y-6">
+          <h3 className="text-xl md:text-2xl font-bold text-gray-900">Achievements</h3>
+          <AchievementSystem />
+        </div>
 
-      <div className="space-y-6">
-        <h3 className="text-2xl font-bold text-gray-900">Smart Card Organization</h3>
-        <SmartCardOrganizer />
+        {/* Smart Card Organization */}
+        <div className="space-y-4 md:space-y-6">
+          <h3 className="text-xl md:text-2xl font-bold text-gray-900">Smart Card Organization</h3>
+          <SmartCardOrganizer />
+        </div>
       </div>
     </div>
   );
