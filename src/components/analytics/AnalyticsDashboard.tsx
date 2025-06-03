@@ -41,78 +41,81 @@ export const AnalyticsDashboard = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gray-50/30 p-4 md:p-6">
-      <div className="max-w-[1400px] mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Learning Analytics</h2>
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              type="search"
-              placeholder="Search cards..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 w-full"
-            />
+    <div className="w-full space-y-6">
+      {/* Header */}
+      <div className="flex flex-col space-y-3 md:space-y-0 md:flex-row md:items-center md:justify-between">
+        <h2 className="text-xl md:text-2xl font-bold text-gray-900">Learning Analytics</h2>
+        <div className="relative w-full md:w-64">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            type="search"
+            placeholder="Search cards..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 w-full"
+          />
+        </div>
+      </div>
+
+      {/* Filters */}
+      <SearchFilters />
+
+      {/* Charts Carousel - Compact Version for Home Page */}
+      <div className="w-full">
+        <Carousel className="w-full" opts={{ align: "start", loop: false }}>
+          <CarouselContent className="-ml-2 md:-ml-4">
+            <CarouselItem className="pl-2 md:pl-4 basis-full md:basis-1/2 xl:basis-1/3">
+              <Card className="p-3 md:p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 shadow-sm hover:shadow-md transition-shadow h-[280px] md:h-[300px]">
+                <h3 className="text-sm md:text-base font-semibold mb-3 text-blue-900">Daily Progress</h3>
+                <div className="w-full h-[220px] md:h-[240px]">
+                  <ProgressChart data={analyticsData.dailyProgress} />
+                </div>
+              </Card>
+            </CarouselItem>
+            
+            <CarouselItem className="pl-2 md:pl-4 basis-full md:basis-1/2 xl:basis-1/3">
+              <Card className="p-3 md:p-4 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 shadow-sm hover:shadow-md transition-shadow h-[280px] md:h-[300px]">
+                <h3 className="text-sm md:text-base font-semibold mb-3 text-green-900">Success Rate</h3>
+                <div className="w-full h-[220px] md:h-[240px]">
+                  <SuccessRateChart data={analyticsData.successRates} />
+                </div>
+              </Card>
+            </CarouselItem>
+            
+            <CarouselItem className="pl-2 md:pl-4 basis-full md:basis-1/2 xl:basis-1/3">
+              <Card className="p-3 md:p-4 bg-gradient-to-br from-purple-50 to-violet-50 border-purple-200 shadow-sm hover:shadow-md transition-shadow h-[280px] md:h-[300px]">
+                <h3 className="text-sm md:text-base font-semibold mb-3 text-purple-900">Study Time</h3>
+                <div className="w-full h-[220px] md:h-[240px]">
+                  <StudyTimeChart data={analyticsData.studyTime} />
+                </div>
+              </Card>
+            </CarouselItem>
+          </CarouselContent>
+          <CarouselPrevious className="hidden md:flex -left-12" />
+          <CarouselNext className="hidden md:flex -right-12" />
+        </Carousel>
+      </div>
+
+      {/* Learning Patterns - Compact Version */}
+      <div className="w-full">
+        <Card className="p-4 md:p-6">
+          <h3 className="text-sm md:text-base font-semibold mb-4">Learning Patterns</h3>
+          <div className="w-full h-60 md:h-80">
+            <LearningPatterns data={analyticsData.dailyProgress} />
           </div>
-        </div>
+        </Card>
+      </div>
+      
+      {/* Achievements Section - Compact */}
+      <div className="space-y-3 md:space-y-4">
+        <h3 className="text-lg md:text-xl font-bold text-gray-900">Recent Achievements</h3>
+        <AchievementSystem />
+      </div>
 
-        {/* Filters */}
-        <SearchFilters />
-
-        {/* Charts Carousel */}
-        <div className="w-full">
-          <Carousel className="w-full" opts={{ align: "start", loop: false }}>
-            <CarouselContent className="-ml-2 md:-ml-4">
-              <CarouselItem className="pl-2 md:pl-4 basis-full md:basis-1/2 xl:basis-1/3">
-                <Card className="p-4 md:p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 shadow-sm hover:shadow-md transition-shadow h-[320px] md:h-[350px]">
-                  <h3 className="text-lg font-semibold mb-4 text-blue-900">Daily Progress</h3>
-                  <div className="w-full h-[240px] md:h-[260px]">
-                    <ProgressChart data={analyticsData.dailyProgress} />
-                  </div>
-                </Card>
-              </CarouselItem>
-              
-              <CarouselItem className="pl-2 md:pl-4 basis-full md:basis-1/2 xl:basis-1/3">
-                <Card className="p-4 md:p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 shadow-sm hover:shadow-md transition-shadow h-[320px] md:h-[350px]">
-                  <h3 className="text-lg font-semibold mb-4 text-green-900">Success Rate</h3>
-                  <div className="w-full h-[240px] md:h-[260px]">
-                    <SuccessRateChart data={analyticsData.successRates} />
-                  </div>
-                </Card>
-              </CarouselItem>
-              
-              <CarouselItem className="pl-2 md:pl-4 basis-full md:basis-1/2 xl:basis-1/3">
-                <Card className="p-4 md:p-6 bg-gradient-to-br from-purple-50 to-violet-50 border-purple-200 shadow-sm hover:shadow-md transition-shadow h-[320px] md:h-[350px]">
-                  <h3 className="text-lg font-semibold mb-4 text-purple-900">Study Time</h3>
-                  <div className="w-full h-[240px] md:h-[260px]">
-                    <StudyTimeChart data={analyticsData.studyTime} />
-                  </div>
-                </Card>
-              </CarouselItem>
-            </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-12" />
-            <CarouselNext className="hidden md:flex -right-12" />
-          </Carousel>
-        </div>
-
-        {/* Learning Patterns */}
-        <div className="w-full">
-          <LearningPatterns data={analyticsData.dailyProgress} />
-        </div>
-        
-        {/* Achievements Section */}
-        <div className="space-y-4 md:space-y-6">
-          <h3 className="text-xl md:text-2xl font-bold text-gray-900">Achievements</h3>
-          <AchievementSystem />
-        </div>
-
-        {/* Smart Card Organization */}
-        <div className="space-y-4 md:space-y-6">
-          <h3 className="text-xl md:text-2xl font-bold text-gray-900">Smart Card Organization</h3>
-          <SmartCardOrganizer />
-        </div>
+      {/* Smart Card Organization - Compact */}
+      <div className="space-y-3 md:space-y-4">
+        <h3 className="text-lg md:text-xl font-bold text-gray-900">Smart Organization</h3>
+        <SmartCardOrganizer />
       </div>
     </div>
   );
