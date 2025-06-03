@@ -13,9 +13,9 @@ interface LearningPatternsProps {
 
 export const LearningPatterns = ({ data }: LearningPatternsProps) => {
   return (
-    <Card className="p-4 md:p-6 bg-gradient-to-br from-slate-50 to-gray-50 border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-      <h3 className="text-base md:text-lg font-semibold mb-4 md:mb-6 text-slate-900">Learning Patterns</h3>
-      <div className="w-full aspect-[16/9] md:aspect-[2/1]">
+    <Card className="p-6">
+      <h3 className="text-lg font-semibold mb-4">Learning Patterns</h3>
+      <div className="w-full h-80">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />

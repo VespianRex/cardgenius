@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -39,7 +40,7 @@ export const Analytics = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto p-4 space-y-6 max-w-7xl">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold">Learning Analytics</h2>
         <div className="relative">
@@ -59,21 +60,29 @@ export const Analytics = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card className="p-6">
           <h3 className="text-lg font-semibold mb-4">Daily Progress</h3>
-          <ProgressChart data={analyticsData.dailyProgress} />
+          <div className="w-full h-64">
+            <ProgressChart data={analyticsData.dailyProgress} />
+          </div>
         </Card>
 
         <Card className="p-6">
           <h3 className="text-lg font-semibold mb-4">Success Rate</h3>
-          <SuccessRateChart data={analyticsData.successRates} />
+          <div className="w-full h-64">
+            <SuccessRateChart data={analyticsData.successRates} />
+          </div>
         </Card>
 
         <Card className="p-6">
           <h3 className="text-lg font-semibold mb-4">Study Time</h3>
-          <StudyTimeChart data={analyticsData.studyTime} />
+          <div className="w-full h-64">
+            <StudyTimeChart data={analyticsData.studyTime} />
+          </div>
         </Card>
       </div>
 
-      <LearningPatterns data={analyticsData.dailyProgress} />
+      <div className="w-full">
+        <LearningPatterns data={analyticsData.dailyProgress} />
+      </div>
       
       <div className="mt-8">
         <h3 className="text-2xl font-bold mb-4">Achievements</h3>
