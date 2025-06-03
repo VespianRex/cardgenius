@@ -1,16 +1,12 @@
 
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ProgressChart } from "./ProgressChart";
-import { SuccessRateChart } from "./SuccessRateChart";
-import { StudyTimeChart } from "./StudyTimeChart";
 import { SearchFilters } from "./SearchFilters";
-import { LearningPatterns } from "./LearningPatterns";
-import { AchievementSystem } from "../achievements/AchievementSystem";
-import { SmartCardOrganizer } from "../cards/SmartCardOrganizer";
+import { AnalyticsOverview } from "./AnalyticsOverview";
+import { AnalyticsLearningPatterns } from "./AnalyticsLearningPatterns";
+import { AnalyticsAchievements } from "./AnalyticsAchievements";
+import { AnalyticsSmartOrganization } from "./AnalyticsSmartOrganization";
 
 export const AnalyticsDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,7 +37,7 @@ export const AnalyticsDashboard = () => {
   };
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6 md:space-y-8">
       {/* Header */}
       <div className="flex flex-col space-y-3 md:space-y-0 md:flex-row md:items-center md:justify-between">
         <h2 className="text-xl md:text-2xl font-bold text-gray-900">Learning Analytics</h2>
@@ -60,62 +56,16 @@ export const AnalyticsDashboard = () => {
       {/* Filters */}
       <SearchFilters />
 
-      {/* Charts Carousel - Compact Version for Home Page */}
-      <div className="w-full">
-        <Carousel className="w-full" opts={{ align: "start", loop: false }}>
-          <CarouselContent className="-ml-2 md:-ml-4">
-            <CarouselItem className="pl-2 md:pl-4 basis-full md:basis-1/2 xl:basis-1/3">
-              <Card className="p-3 md:p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 shadow-sm hover:shadow-md transition-shadow h-[280px] md:h-[300px]">
-                <h3 className="text-sm md:text-base font-semibold mb-3 text-blue-900">Daily Progress</h3>
-                <div className="w-full h-[220px] md:h-[240px]">
-                  <ProgressChart data={analyticsData.dailyProgress} />
-                </div>
-              </Card>
-            </CarouselItem>
-            
-            <CarouselItem className="pl-2 md:pl-4 basis-full md:basis-1/2 xl:basis-1/3">
-              <Card className="p-3 md:p-4 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 shadow-sm hover:shadow-md transition-shadow h-[280px] md:h-[300px]">
-                <h3 className="text-sm md:text-base font-semibold mb-3 text-green-900">Success Rate</h3>
-                <div className="w-full h-[220px] md:h-[240px]">
-                  <SuccessRateChart data={analyticsData.successRates} />
-                </div>
-              </Card>
-            </CarouselItem>
-            
-            <CarouselItem className="pl-2 md:pl-4 basis-full md:basis-1/2 xl:basis-1/3">
-              <Card className="p-3 md:p-4 bg-gradient-to-br from-purple-50 to-violet-50 border-purple-200 shadow-sm hover:shadow-md transition-shadow h-[280px] md:h-[300px]">
-                <h3 className="text-sm md:text-base font-semibold mb-3 text-purple-900">Study Time</h3>
-                <div className="w-full h-[220px] md:h-[240px]">
-                  <StudyTimeChart data={analyticsData.studyTime} />
-                </div>
-              </Card>
-            </CarouselItem>
-          </CarouselContent>
-          <CarouselPrevious className="hidden md:flex -left-12" />
-          <CarouselNext className="hidden md:flex -right-12" />
-        </Carousel>
-      </div>
+      {/* Main Analytics Overview */}
+      <AnalyticsOverview analyticsData={analyticsData} />
 
-      {/* Learning Patterns - Compact Version */}
-      <div className="w-full">
-        <Card className="p-4 md:p-6">
-          <h3 className="text-sm md:text-base font-semibold mb-4">Learning Patterns</h3>
-          <div className="w-full h-60 md:h-80">
-            <LearningPatterns data={analyticsData.dailyProgress} />
-          </div>
-        </Card>
-      </div>
+      {/* Learning Patterns - Full Width */}
+      <AnalyticsLearningPatterns data={analyticsData.dailyProgress} />
       
-      {/* Achievements Section - Compact */}
-      <div className="space-y-3 md:space-y-4">
-        <h3 className="text-lg md:text-xl font-bold text-gray-900">Recent Achievements</h3>
-        <AchievementSystem />
-      </div>
-
-      {/* Smart Card Organization - Compact */}
-      <div className="space-y-3 md:space-y-4">
-        <h3 className="text-lg md:text-xl font-bold text-gray-900">Smart Organization</h3>
-        <SmartCardOrganizer />
+      {/* Bottom Sections - Responsive Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+        <AnalyticsAchievements />
+        <AnalyticsSmartOrganization />
       </div>
     </div>
   );
