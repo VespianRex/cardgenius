@@ -63,37 +63,37 @@ export const AnalyticsDashboard = () => {
 
         {/* Charts Carousel */}
         <div className="w-full">
-          <Carousel className="w-full">
+          <Carousel className="w-full" opts={{ align: "start", loop: false }}>
             <CarouselContent className="-ml-2 md:-ml-4">
-              <CarouselItem className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
-                <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 shadow-sm hover:shadow-md transition-shadow h-full">
+              <CarouselItem className="pl-2 md:pl-4 basis-full md:basis-1/2 xl:basis-1/3">
+                <Card className="p-4 md:p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 shadow-sm hover:shadow-md transition-shadow h-[320px] md:h-[350px]">
                   <h3 className="text-lg font-semibold mb-4 text-blue-900">Daily Progress</h3>
-                  <div className="w-full h-64">
+                  <div className="w-full h-[240px] md:h-[260px]">
                     <ProgressChart data={analyticsData.dailyProgress} />
                   </div>
                 </Card>
               </CarouselItem>
               
-              <CarouselItem className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
-                <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 shadow-sm hover:shadow-md transition-shadow h-full">
+              <CarouselItem className="pl-2 md:pl-4 basis-full md:basis-1/2 xl:basis-1/3">
+                <Card className="p-4 md:p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 shadow-sm hover:shadow-md transition-shadow h-[320px] md:h-[350px]">
                   <h3 className="text-lg font-semibold mb-4 text-green-900">Success Rate</h3>
-                  <div className="w-full h-64">
+                  <div className="w-full h-[240px] md:h-[260px]">
                     <SuccessRateChart data={analyticsData.successRates} />
                   </div>
                 </Card>
               </CarouselItem>
               
-              <CarouselItem className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3">
-                <Card className="p-6 bg-gradient-to-br from-purple-50 to-violet-50 border-purple-200 shadow-sm hover:shadow-md transition-shadow h-full">
+              <CarouselItem className="pl-2 md:pl-4 basis-full md:basis-1/2 xl:basis-1/3">
+                <Card className="p-4 md:p-6 bg-gradient-to-br from-purple-50 to-violet-50 border-purple-200 shadow-sm hover:shadow-md transition-shadow h-[320px] md:h-[350px]">
                   <h3 className="text-lg font-semibold mb-4 text-purple-900">Study Time</h3>
-                  <div className="w-full h-64">
+                  <div className="w-full h-[240px] md:h-[260px]">
                     <StudyTimeChart data={analyticsData.studyTime} />
                   </div>
                 </Card>
               </CarouselItem>
             </CarouselContent>
-            <CarouselPrevious className="hidden md:flex" />
-            <CarouselNext className="hidden md:flex" />
+            <CarouselPrevious className="hidden md:flex -left-12" />
+            <CarouselNext className="hidden md:flex -right-12" />
           </Carousel>
         </div>
 
